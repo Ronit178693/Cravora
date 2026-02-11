@@ -59,13 +59,14 @@ const UserSchema = new mongoose.Schema({
 
 // Hashing Password
 
-const hashPassword = async (password) => {
+export const hashPassword = async (password) => {
     const salt = await bcrypt.genSalt(10);
     return await bcrypt.hash(password, salt);
 }
 
-const comparePassword = async (password, hashPassword) => {
+export const comparePassword = async (password, hashPassword) => {
     return await bcrypt.compare(password, hashPassword);
 }
 
-module.exports = mongoose.model('User', UserSchema); 
+
+export default mongoose.model('User', UserSchema);

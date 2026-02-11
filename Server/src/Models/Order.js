@@ -22,10 +22,17 @@ const OrderSchema = new mongoose.Schema({
         default: 'Food'
     },
     items: [{
-        product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+        menuItemId: { type: mongoose.Schema.Types.ObjectId },
+        name: {
+            type: String,
+            required: function () { return this.parent().orderType === 'Food'; }
+        },
+        price: {
+            type: Number,
+            required: function () { return this.parent().orderType === 'Food'; }
+        },
         quantity: { type: Number, default: 1 },
-        price: { type: Number }, // Snapshot of price at time of order
-        name: { type: String }   // Snapshot of name
+        image: String
     }],
     packageDetails: {
         description: String,

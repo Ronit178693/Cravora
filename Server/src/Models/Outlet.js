@@ -33,6 +33,34 @@ const OutletSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    menu: [{
+        name: {
+            type: String,
+            required: [true, 'Please provide product name'],
+            trim: true
+        },
+        description: {
+            type: String,
+            trim: true
+        },
+        price: {
+            type: Number,
+            required: [true, 'Please provide product price'],
+            min: 0
+        },
+        category: {
+            type: String,
+            enum: ['Snacks', 'Main Course', 'Beverages', 'Dessert', 'Other'],
+            default: 'Other'
+        },
+        image: {
+            type: String
+        },
+        isAvailable: {
+            type: Boolean,
+            default: true
+        }
+    }],
     orderCount: { type: Number, default: 0 },
     orders: [
         {
