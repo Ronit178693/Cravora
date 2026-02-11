@@ -14,34 +14,18 @@ const OrderSchema = new mongoose.Schema({
     outlet: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Outlet',
-        required: function () { return this.orderType === 'Food'; } // Only required if it's a food order
-    },
-    orderType: {
-        type: String,
-        enum: ['Food', 'Package'],
-        default: 'Food'
+        required: true
     },
     items: [{
-        menuItemId: { type: mongoose.Schema.Types.ObjectId },
-        name: {
-            type: String,
-            required: function () { return this.parent().orderType === 'Food'; }
-        },
-        price: {
-            type: Number,
-            required: function () { return this.parent().orderType === 'Food'; }
-        },
+        menuItemId: { type: mongoose.Schema.Types.ObjectId, required: true },
+        name: { type: String, required: true },
+        price: { type: Number, required: true },
         quantity: { type: Number, default: 1 },
         image: String
     }],
-    packageDetails: {
-        description: String,
-        weight: String, // approx (e.g. "Light", "Heavy")
-        instruction: String
-    },
     pickupLocation: {
         type: String,
-        required: true // For Food this is Outlet location (auto-filled), for Package it's user input
+        required: true // This will now always be the Outlet's location
     },
     dropLocation: {
         type: String,
