@@ -68,3 +68,4 @@ const comparePassword = async (password, hashPassword) => {
     return await bcrypt.compare(password, hashPassword);
 }
 
+module.exports = mongoose.model('User', UserSchema); 
