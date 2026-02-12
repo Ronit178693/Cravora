@@ -96,5 +96,8 @@ export const Logout = async (req, res) => {
     }
 }
 
+export const passwordResetOTP = async (req, res) => {
+    
+}
 
 
