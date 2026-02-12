@@ -131,7 +131,7 @@ export const passwordResetOTP = async (req, res) => {
         if (!user) {
             return res.status(400).json({ success: false, message: "User not found" });
         }
-        // Generate a 6-digit OTP and set expiration to 10 minutes
+        // Generate a 6-digit OTP and set expiration to 5 minutes
         const otp = Math.floor(100000 + Math.random() * 900000);
         user.otp = otp;
         user.otpExpires = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
@@ -158,7 +158,6 @@ export const passwordResetOTP = async (req, res) => {
     }
 }
 
-// Reset password using OTP
 export const resetPassword = async (req, res) => {
     const { email, otp, newPassword } = req.body;
     try {
