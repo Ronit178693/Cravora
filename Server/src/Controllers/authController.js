@@ -1,6 +1,19 @@
 import User from "../Models/User.js";
 import { hashPassword, comparePassword} from "../Models/User.js";
 import jwt from "jsonwebtoken";
+import { transporter } from "../Transporter.js";
+
+
+const sendEmail = async (to, subject, htmlContent) => {
+    const mailOptions = {
+        from: `"Cravora" <${process.env.EMAIL_USER}>`,  // Sender name + email
+        to,           // Recipient email
+        subject,      // Email subject line
+        html: htmlContent  // HTML body (you can also use 'text' for plain text)
+    };
+
+    await transporter.sendMail(mailOptions);
+};
 
 export const Register = async (req, res) => {
     const {name, email, phoneNumber, password, role} = req.body;
@@ -30,10 +43,22 @@ export const Register = async (req, res) => {
                 httpOnly: true, 
                 secure: process.env.NODE_ENV == "production", // The cookie is only sent over HTTPS on local hoast it fails sending cookie
                 sameSite: "strict",
-                maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
+                maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
             })
             // Sending mail for creating a new account with us
-
+            try{
+                await sendEmail(
+                email,
+                "Welcome to Cravora",
+                `<h1>Hi ${name}</h1>
+                <p>Thank you for creating an account with us</p>
+                <p>Best Regards</p>
+                <p>Cravora</p>`
+            )
+            }
+            catch(error){
+                console.log(error);
+            }
             return res.status(201).json({success: true, message: "User created successfully", user: newUser});
         }
     }
@@ -53,11 +78,11 @@ export const Login = async (req, res) => {
         const user = await User.findOne({email}).select("+password");
         // Checking if the user does not exists 
         if(!user){
-            return res.status(400).json({success: false, message: "User not found"});
+            return res.status(400).json({success: false, message: "Invalid email or password"});
         }
         // Checking if the password is correct
         if(!await comparePassword(password, user.password)){
-            return res.status(400).json({success: false, message: "Invalid password"});
+            return res.status(400).json({success: false, message: "Invalid email or password"});
         }
         // Creating a token and sending info like userID and role 
         const token = jwt.sign({
@@ -72,7 +97,7 @@ export const Login = async (req, res) => {
             httpOnly: true, 
             secure: process.env.NODE_ENV == "production", // The cookie is only sent over HTTPS on local hoast it fails sending cookie
             sameSite: "strict",
-            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
         })
 
         return res.status(200).json({success: true, message: "User logged in successfully"});
@@ -97,7 +122,7 @@ export const Logout = async (req, res) => {
 }
 
 export const passwordResetOTP = async (req, res) => {
-    
+
 }
 
 
