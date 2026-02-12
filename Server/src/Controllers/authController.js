@@ -1,19 +1,44 @@
 import User from "../Models/User.js";
+import { hashPassword } from "../Models/User.js";
 import jwt from "jsonwebtoken";
 
-
-export const register = async (req, res) => {
-    const { name, email, password } = req.body;
-    try {
-        const user = await User.findOne({ email });
-        if (user) {
-            return res.status(400).json({ message: 'User already exists' });
+export const Register = async (req, res) => {
+    const {name, email, phoneNumber, password, role} = req.body;
+    try{
+        if(!name || !email || !phoneNumber || !password || !role){
+            return res.status(400).json({success: false, message: "All fields are required"});
         }
-        const newUser = new User({ name, email, password });
-        await newUser.save();
-        res.status(201).json({ message: 'User registered successfully' });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+        const user = await User.findOne({email});
+        // Checking if the user exists 
+        if(user){
+            return res.status(400).json({success: false, message: "User already exists"});
+        }
+        // Creating new user 
+        // waiting for the password to be encrypted
+        else{
+            const newUser = await User.create({name, email, phoneNumber, password: await hashPassword(password), role});
+            // Creating a token and sending info like userID and role 
+            const token = jwt.sign({
+                id: newUser._id,
+                role: newUser.role
+            }, process.env.JWT_SECRET, {
+                expiresIn: "30d"
+            })
+            // Sending token to the client as cookie
+            // Evey time any request is made after logging in or signing in the cookie is automatically sent from the client to the server
+            res.cookie("token", token, {
+                httpOnly: true, 
+                secure: process.env.NODE_ENV == "production", // The cookie is only sent over HTTPS on local hoast it fails sending cookie
+                sameSite: "strict",
+                maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
+            })
+            // Sending mail for creating a new account with us
+
+            return res.status(201).json({success: true, message: "User created successfully", user: newUser});
+        }
+    }
+    catch(error){
+        return res.status(500).json({success: false, message: error.message});
     }
 }
 
