@@ -22,7 +22,7 @@ export const Register = async (req, res) => {
                 id: newUser._id,
                 role: newUser.role
             }, process.env.JWT_SECRET, {
-                expiresIn: "30d"
+                expiresIn: "7d"
             })
             // Sending token to the client as cookie
             // Evey time any request is made after logging in or signing in the cookie is automatically sent from the client to the server
@@ -64,7 +64,7 @@ export const Login = async (req, res) => {
             id: user._id,
             role: user.role
         }, process.env.JWT_SECRET, {
-            expiresIn: "30d"
+            expiresIn: "7d"
         })
         // Sending token to the client as cookie
         // Evey time any request is made after logging in or signing in the cookie is automatically sent from the client to the server
@@ -76,6 +76,20 @@ export const Login = async (req, res) => {
         })
 
         return res.status(200).json({success: true, message: "User logged in successfully"});
+    }
+    catch(error){
+        return res.status(500).json({success: false, message: error.message});
+    }
+}
+
+export const Logout = async (req, res) => {
+    try{
+        res.clearCookie("token", {
+            httpOnly: true, 
+            secure: process.env.NODE_ENV == "production", // The cookie is only sent over HTTPS on local hoast it fails sending cookie
+            sameSite: "strict",
+        })
+        return res.status(200).json({success: true, message: "User logged out successfully"});
     }
     catch(error){
         return res.status(500).json({success: false, message: error.message});
