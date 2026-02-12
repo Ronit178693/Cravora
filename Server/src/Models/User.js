@@ -53,7 +53,11 @@ const UserSchema = new mongoose.Schema({
             orderedAt: { type: Date, default: Date.now }
         }
     ],
-    lastDeliveryAt: { type: Date }
+    lastDeliveryAt: { type: Date },
+    // Password Reset OTP fields
+    otp: { type: Number, default: null },
+    otpExpires: { type: Date, default: null }
+    
 }, { timestamps: true })
 
 
