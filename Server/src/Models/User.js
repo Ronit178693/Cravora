@@ -31,7 +31,7 @@ const UserSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['Student', 'Outlet', 'DeliveryPartner', 'Admin'],
+        enum: ['Student', 'Outlet', 'DeliveryPartner'],
         default: 'Student'
     },
     createdAt: {
@@ -57,7 +57,7 @@ const UserSchema = new mongoose.Schema({
     // Password Reset OTP fields
     otp: { type: Number, default: null },
     otpExpires: { type: Date, default: null }
-    
+
 }, { timestamps: true })
 
 
