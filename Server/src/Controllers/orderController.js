@@ -142,7 +142,7 @@ export const acceptOrder = async (req, res) => {
 export const updateOrderStatus = async (req, res) => {
     try {
         const { status } = req.body;
-        const validStatuses = ["Accepted", "Preparing", "OutForDelivery", "Delivered"];
+        const validStatuses = ["Accepted", "Preparing", "Delivered"];
 
         if (!status || !validStatuses.includes(status)) {
             return res.status(400).json({ success: false, message: `Invalid status. Must be one of: ${validStatuses.join(", ")}` });
@@ -163,15 +163,15 @@ export const updateOrderStatus = async (req, res) => {
         }
 
         // Status flow validation
+        // Note: Preparing → OutForDelivery is handled by acceptDelivery (runner only)
         const statusFlow = {
             "Pending": "Accepted",
             "Accepted": "Preparing",
-            "Preparing": "OutForDelivery",
             "OutForDelivery": "Delivered"
         };
 
         if (statusFlow[order.status] !== status) {
-            return res.status(400).json({ success: false, message: `Cannot move from '${order.status}' to '${status}'. Next valid status: '${statusFlow[order.status]}'` });
+            return res.status(400).json({ success: false, message: `Cannot move from '${order.status}' to '${status}'. Next valid status: '${statusFlow[order.status] || "use acceptDelivery"}'` });
         }
 
         order.status = status;
@@ -226,7 +226,7 @@ export const getAvailableOrders = async (req, res) => {
     try {
         // Orders that are ready for pickup and don't have a runner yet
         const orders = await Order.find({
-            status: { $in: ["Preparing", "OutForDelivery"] },
+            status: "Preparing",
             runner: null
         })
             .populate("customer", "name phoneNumber")
@@ -249,8 +249,8 @@ export const acceptDelivery = async (req, res) => {
             return res.status(404).json({ success: false, message: "Order not found" });
         }
 
-        // Order must be in Preparing or OutForDelivery status and have no runner
-        if (!["Preparing", "OutForDelivery"].includes(order.status)) {
+        // Order must be in Preparing status and have no runner
+        if (order.status !== "Preparing") {
             return res.status(400).json({ success: false, message: "This order is not available for delivery" });
         }
 
