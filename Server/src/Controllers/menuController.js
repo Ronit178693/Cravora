@@ -1,5 +1,4 @@
 import Outlet from "../Models/Outlet.js";
-import User from "../Models/User.js";
 
 
 // Add a menu item to an outlet
@@ -31,7 +30,7 @@ export const addMenuItem = async (req, res) => {
 export const updateMenuItem = async (req, res) => {
     const userID = req.user.id;
     try {
-        const outlet = await Outlet.findById(userID);
+        const outlet = await Outlet.findById(req.params.id);
         if (!outlet) {
             return res.status(404).json({ success: false, message: "Outlet not found" });
         }
@@ -63,7 +62,7 @@ export const updateMenuItem = async (req, res) => {
 export const deleteMenuItem = async (req, res) => {
     const userID = req.user.id;
     try {
-        const outlet = await Outlet.findById(userID);
+        const outlet = await Outlet.findById(req.params.id);
         if (!outlet) {
             return res.status(404).json({ success: false, message: "Outlet not found" });
         }

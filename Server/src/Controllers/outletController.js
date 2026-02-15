@@ -1,17 +1,7 @@
 import Outlet from "../Models/Outlet.js";
 import User from "../Models/User.js";
-import { transporter } from "../Transporter.js";
+import sendEmail from "../utils/sendEmail.js";
 
-// Send Email Function
-const sendEmail = async (to, subject, htmlContent) => {
-    const mailOptions = {
-        from: `"Cravora" <${process.env.EMAIL_USER}>`,
-        to,
-        subject,
-        html: htmlContent
-    };
-    await transporter.sendMail(mailOptions);
-};
 
 // Create a new outlet (Only Outlet role users)
 export const addOutlet = async (req, res) => {

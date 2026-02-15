@@ -1,19 +1,9 @@
 import User from "../Models/User.js";
 import { hashPassword, comparePassword } from "../Models/User.js";
 import jwt from "jsonwebtoken";
-import { transporter } from "../Transporter.js";
+import sendEmail from "../utils/sendEmail.js";
 
 
-const sendEmail = async (to, subject, htmlContent) => {
-    const mailOptions = {
-        from: `"Cravora" <${process.env.EMAIL_USER}>`,  // Sender name + email
-        to,           // Recipient email
-        subject,      // Email subject line
-        html: htmlContent  // HTML body (you can also use 'text' for plain text)
-    };
-
-    await transporter.sendMail(mailOptions);
-};
 
 export const Register = async (req, res) => {
     const { name, email, phoneNumber, password, role } = req.body;
