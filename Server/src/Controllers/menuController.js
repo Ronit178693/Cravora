@@ -13,11 +13,11 @@ export const addMenuItem = async (req, res) => {
         if (outlet.owner.toString() !== userID) {
             return res.status(403).json({ success: false, message: "You are not authorized to modify this menu" });
         }
-        const { name, description, price, category, image } = req.body;
+        const { name, description, price, category } = req.body;
         if (!name || !price) {
             return res.status(400).json({ success: false, message: "Name and price are required" });
         }
-        outlet.menu.push({ name, description, price, category, image });
+        outlet.menu.push({ name, description, price, category, image: req.file ? req.file.path : undefined });
         await outlet.save();
         return res.status(201).json({ success: true, message: "Menu item added successfully", menu: outlet.menu });
     }
@@ -42,12 +42,12 @@ export const updateMenuItem = async (req, res) => {
         if (!menuItem) {
             return res.status(404).json({ success: false, message: "Menu item not found" });
         }
-        const { name, description, price, category, image, isAvailable } = req.body;
+        const { name, description, price, category, isAvailable } = req.body;
         if (name) menuItem.name = name;
         if (description) menuItem.description = description;
         if (price) menuItem.price = price;
         if (category) menuItem.category = category;
-        if (image) menuItem.image = image;
+        if (req.file) menuItem.image = req.file.path;
         if (isAvailable !== undefined) menuItem.isAvailable = isAvailable;
 
         await outlet.save();

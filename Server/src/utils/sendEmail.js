@@ -1,4 +1,4 @@
-import { transporter } from "../Transporter.js";
+import { transporter } from "../Config/Transporter.js";
 
 const sendEmail = async (to, subject, htmlContent) => {
     const mailOptions = {

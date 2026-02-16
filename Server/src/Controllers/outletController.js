@@ -5,7 +5,7 @@ import sendEmail from "../utils/sendEmail.js";
 
 // Create a new outlet (Only Outlet role users)
 export const addOutlet = async (req, res) => {
-    const { name, description, location, contactNumber, images, WorkingHours } = req.body;
+    const { name, description, location, contactNumber, WorkingHours } = req.body;
     try {
         if (!name || !location) {
             return res.status(400).json({ success: false, message: "Name and location are required" });
@@ -17,7 +17,7 @@ export const addOutlet = async (req, res) => {
             description,
             location,
             contactNumber,
-            images,
+            images: req.file ? [req.file.path] : [],
             WorkingHours
         });
         // Send welcome email to the outlet owner
@@ -96,13 +96,13 @@ export const updateOutlet = async (req, res) => {
         if (outlet.owner.toString() !== req.user.id) {
             return res.status(403).json({ success: false, message: "You are not authorized to update this outlet" });
         }
-        const { name, description, location, contactNumber, images, WorkingHours, isOpen } = req.body;
+        const { name, description, location, contactNumber, WorkingHours, isOpen } = req.body;
         // Update only the fields that are provided
         if (name) outlet.name = name;
         if (description) outlet.description = description;
         if (location) outlet.location = location;
         if (contactNumber) outlet.contactNumber = contactNumber;
-        if (images) outlet.images = images;
+        if (req.file) outlet.images.push(req.file.path);
         if (WorkingHours) outlet.WorkingHours = WorkingHours;
         if (isOpen !== undefined) outlet.isOpen = isOpen;
 
