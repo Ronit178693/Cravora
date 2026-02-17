@@ -9,7 +9,7 @@ const API = axios.create({
 });
 
 export const addOutlet = (data) => API.post(API_PATHS.OUTLET.ADD, data);
-export const updateOutlet = (id, data) => API.put(API_PATHS.OUTLET.UPDATE, id, data);
-export const deleteOutlet = (id) => API.delete(API_PATHS.OUTLET.DELETE, id);
+export const updateOutlet = (id, data) => API.put(API_PATHS.OUTLET.UPDATE.replace(':id', id), data);
+export const deleteOutlet = (id) => API.delete(API_PATHS.OUTLET.DELETE.replace(':id', id));
 export const getAllOutlets = () => API.get(API_PATHS.OUTLET.GET_ALL);
-export const getOutletById = (id) => API.get(API_PATHS.OUTLET.GET_BY_ID, id);
+export const getOutletById = (id) => API.get(API_PATHS.OUTLET.GET_BY_ID.replace(':id', id));
