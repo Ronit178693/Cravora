@@ -127,10 +127,10 @@ export default function LoginForm() {
                     {loading ? (
                         <>
                             <span className="btn-spinner"></span>
-                            Signing in...
+                            Logging in...
                         </>
                     ) : (
-                        <>Sign In →</>
+                        <>Login →</>
                     )}
                 </button>
 

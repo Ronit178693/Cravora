@@ -180,6 +180,20 @@ export const resetPassword = async (req, res) => {
         user.otp = null;
         user.otpExpires = null;
         await user.save();
+        try {
+            await sendEmail(
+                email,
+                "Password Successfully Reset",
+                `<h1>Hi ${user.name}</h1>
+                <p>Your password has been reset successfully.</p>
+                <p>If you did not request this, please ignore this email.</p>
+                <p>Best Regards</p>
+                <p>Cravora</p>`
+            )
+        }
+        catch (error) {
+            console.log("Password reset email failed:", error.message);
+        }
         return res.status(200).json({ success: true, message: "Password reset successfully" });
     }
     catch (error) {
