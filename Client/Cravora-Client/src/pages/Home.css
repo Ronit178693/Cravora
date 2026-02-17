@@ -455,6 +455,7 @@
     border-radius: var(--radius-xl);
     padding: 1px;
     background: linear-gradient(135deg, rgba(255, 107, 53, 0.4), transparent, rgba(114, 9, 183, 0.4));
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
