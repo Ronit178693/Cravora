@@ -1,5 +1,5 @@
 /* ===========================
-   REGISTER PAGE
+   REGISTER PAGE LAYOUT
    =========================== */
 .register-page {
     min-height: 100vh;
@@ -8,10 +8,10 @@
     justify-content: center;
     position: relative;
     overflow: hidden;
-    padding: 40px 20px;
+    padding: 20px;
 }
 
-/* Animated background orbs */
+/* Background Animations */
 .register-bg {
     position: absolute;
     inset: 0;
@@ -61,126 +61,94 @@
         transform: translate(0, 0) scale(1);
     }
 
-    25% {
-        transform: translate(40px, -60px) scale(1.08);
-    }
-
     50% {
         transform: translate(-25px, 35px) scale(0.92);
     }
-
-    75% {
-        transform: translate(50px, 50px) scale(1.04);
-    }
 }
 
-/* Grid overlay */
-.register-grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-    background-size: 60px 60px;
-    mask: radial-gradient(ellipse at center, black 30%, transparent 75%);
-    -webkit-mask: radial-gradient(ellipse at center, black 30%, transparent 75%);
-}
-
-/* Main card container */
-.register-card {
+/* Main Container */
+.register-container {
     position: relative;
     z-index: 2;
     width: 100%;
-    max-width: 520px;
+    max-width: 1100px;
+}
+
+.register-grid-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
     background: rgba(26, 26, 46, 0.65);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid var(--border);
     border-radius: var(--radius-xl);
-    padding: 48px 44px;
-    box-shadow:
-        0 24px 80px rgba(0, 0, 0, 0.5),
-        0 0 60px rgba(255, 107, 53, 0.06);
-    animation: registerCardIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    overflow: hidden;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5), 0 0 60px rgba(255, 107, 53, 0.06);
+    animation: scaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.register-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius-xl);
-    padding: 1px;
-    background: linear-gradient(135deg, rgba(255, 107, 53, 0.35), transparent 50%, rgba(114, 9, 183, 0.35));
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-}
-
-@keyframes registerCardIn {
+@keyframes scaleIn {
     from {
         opacity: 0;
-        transform: translateY(40px) scale(0.96);
+        transform: scale(0.96) translateY(20px);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: scale(1) translateY(0);
     }
 }
 
-/* Header */
+/* ===========================
+   LEFT SIDE: FORM
+   =========================== */
+.register-form-container {
+    padding: 32px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .register-header {
-    text-align: center;
-    margin-bottom: 36px;
+    margin-bottom: 24px;
 }
 
 .register-logo {
     font-family: var(--font-display);
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: 700;
     background: var(--gradient-1);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     display: inline-block;
 }
 
 .register-header h2 {
-    font-family: var(--font-display);
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    color: var(--text-primary);
     margin-bottom: 8px;
 }
 
 .register-header p {
-    font-size: 0.95rem;
     color: var(--text-secondary);
-    line-height: 1.5;
 }
 
-/* Form */
 .register-form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
 }
 
-/* Input groups */
-.input-group {
-    position: relative;
-}
-
+/* Inputs */
 .input-group label {
     display: block;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 600;
     color: var(--text-secondary);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     margin-bottom: 8px;
 }
 
@@ -193,42 +161,41 @@
 .input-icon {
     position: absolute;
     left: 16px;
-    font-size: 1.1rem;
     color: var(--text-muted);
     pointer-events: none;
-    transition: color var(--transition-fast);
     z-index: 1;
 }
 
 .input-wrapper input {
     width: 100%;
-    padding: 14px 16px 14px 48px;
-    background: rgba(255, 255, 255, 0.04);
+    padding: 12px 12px 12px 42px;
+    background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     color: var(--text-primary);
     font-family: var(--font-main);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     transition: var(--transition-fast);
-    outline: none;
-}
-
-.input-wrapper input::placeholder {
-    color: var(--text-muted);
 }
 
 .input-wrapper input:focus {
     border-color: var(--accent);
     background: rgba(255, 107, 53, 0.04);
-    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
 }
 
-.input-wrapper input:focus~.input-icon,
-.input-wrapper input:focus+.input-icon {
-    color: var(--accent);
+.field-error {
+    font-size: 0.78rem;
+    color: var(--accent-2);
+    margin-top: 6px;
+    display: block;
 }
 
-/* Password toggle */
+.input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
 .password-toggle {
     position: absolute;
     right: 14px;
@@ -236,36 +203,23 @@
     border: none;
     color: var(--text-muted);
     cursor: pointer;
-    font-size: 1.1rem;
-    padding: 4px;
+    display: flex;
     transition: color var(--transition-fast);
-    z-index: 1;
 }
 
 .password-toggle:hover {
-    color: var(--accent-light);
+    color: var(--accent);
 }
 
-/* Row for side-by-side fields */
-.input-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-}
-
-/* Role selector */
-.role-selector {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
+/* Role Selector */
 .role-selector label {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 600;
     color: var(--text-secondary);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    display: block;
 }
 
 .role-options {
@@ -278,112 +232,60 @@
     position: relative;
 }
 
-.role-option input[type="radio"] {
+.role-option input {
     position: absolute;
     opacity: 0;
-    width: 0;
-    height: 0;
 }
 
-.role-option .role-label {
+.role-label {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
-    padding: 14px 8px;
+    padding: 10px;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     cursor: pointer;
     transition: var(--transition-fast);
-    text-align: center;
 }
 
-.role-option .role-label .role-emoji {
-    font-size: 1.5rem;
-}
-
-.role-option .role-label .role-name {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-}
-
-.role-option .role-label:hover {
-    border-color: rgba(255, 107, 53, 0.3);
-    background: rgba(255, 107, 53, 0.04);
-}
-
-.role-option input[type="radio"]:checked+.role-label {
+.role-option input:checked+.role-label {
     border-color: var(--accent);
     background: rgba(255, 107, 53, 0.08);
-    box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.15), 0 4px 16px rgba(255, 107, 53, 0.1);
 }
 
-.role-option input[type="radio"]:checked+.role-label .role-name {
-    color: var(--accent-light);
+.role-option input:checked+.role-label .role-emoji {
+    margin-bottom: 2px;
 }
 
-/* Submit button */
+/* Buttons & Footer */
 .register-btn {
-    width: 100%;
     padding: 16px;
-    border-radius: var(--radius-md);
     background: var(--gradient-1);
     color: white;
-    font-family: var(--font-main);
-    font-size: 1rem;
+    border-radius: var(--radius-md);
     font-weight: 600;
-    cursor: pointer;
     transition: var(--transition-smooth);
-    box-shadow: 0 4px 24px var(--accent-glow);
     display: flex;
-    align-items: center;
     justify-content: center;
-    gap: 10px;
-    margin-top: 4px;
-    border: none;
-    outline: none;
-    position: relative;
-    overflow: hidden;
-}
-
-.register-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
-    opacity: 0;
-    transition: opacity var(--transition-fast);
-}
-
-.register-btn:hover::before {
-    opacity: 1;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
 }
 
 .register-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 36px var(--accent-glow);
+    box-shadow: 0 8px 30px var(--accent-glow);
 }
 
-.register-btn:active {
-    transform: translateY(0);
-}
-
-.register-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-}
-
-/* Spinner */
 .btn-spinner {
-    width: 20px;
-    height: 20px;
-    border: 2.5px solid rgba(255, 255, 255, 0.3);
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
     border-top-color: white;
     border-radius: 50%;
-    animation: spin 0.7s linear infinite;
+    animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
@@ -392,18 +294,13 @@
     }
 }
 
-/* Divider */
 .register-divider {
     display: flex;
     align-items: center;
     gap: 16px;
-    margin: 4px 0;
-}
-
-.register-divider span {
-    font-size: 0.82rem;
+    margin: 8px 0;
     color: var(--text-muted);
-    white-space: nowrap;
+    font-size: 0.85rem;
 }
 
 .register-divider::before,
@@ -414,69 +311,205 @@
     background: var(--border);
 }
 
-/* Footer link */
 .register-footer {
     text-align: center;
-    margin-top: 8px;
-}
-
-.register-footer p {
     font-size: 0.9rem;
     color: var(--text-secondary);
 }
 
 .register-footer a {
-    color: var(--accent-light);
+    color: var(--accent);
     font-weight: 600;
-    transition: color var(--transition-fast);
     text-decoration: none;
 }
 
-.register-footer a:hover {
-    color: var(--accent);
-    text-decoration: underline;
-}
-
-/* Error message */
-.field-error {
-    font-size: 0.78rem;
-    color: var(--accent-2);
-    margin-top: 4px;
+/* ===========================
+   RIGHT SIDE: VISUALS
+   =========================== */
+.register-visuals {
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(114, 9, 183, 0.1));
+    border-left: 1px solid var(--border);
+    padding: 32px;
     display: flex;
     align-items: center;
-    gap: 4px;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.register-visuals::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(255, 107, 53, 0.15), transparent 60%);
+}
+
+.visual-content {
+    position: relative;
+    z-index: 2;
+    max-width: 400px;
+}
+
+.visual-header h2 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    line-height: 1.2;
+    margin-bottom: 12px;
+}
+
+.visual-header p {
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+}
+
+.features-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.feature-item {
+    display: flex;
+    gap: 16px;
+}
+
+.feature-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.feature-text h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.feature-text p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* 3D Visual Card */
+.visual-card-3d {
+    position: relative;
+    height: 120px;
+}
+
+.floating-card {
+    position: absolute;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 12px 16px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: var(--shadow-md);
+    animation: float 6s ease-in-out infinite;
+}
+
+.user-card {
+    top: 0;
+    left: 0;
+    z-index: 2;
+}
+
+.runner-card {
+    bottom: 10px;
+    right: 0;
+    z-index: 1;
+    animation-delay: -3s;
+    background: rgba(26, 26, 46, 0.8);
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gradient-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.avatar.runner {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.info span:first-child {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.info .badge,
+.info .status {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.status {
+    color: #4ade80;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 /* ===========================
    RESPONSIVE
    =========================== */
-@media (max-width: 600px) {
-    .register-card {
-        padding: 32px 24px;
-        border-radius: var(--radius-lg);
+@media (max-width: 900px) {
+    .register-grid-layout {
+        grid-template-columns: 1fr;
+        max-width: 550px;
     }
 
-    .register-header h2 {
-        font-size: 1.3rem;
+    .register-visuals {
+        border-left: none;
+        border-top: 1px solid var(--border);
+        padding: 32px;
+        order: -1;
+        /* Move visuals to top or hide? Let's hide for simpler mobile view or keep it subtle */
+        display: none;
+        /* Often better to hide side panels on mobile focus */
+    }
+}
+
+@media (max-width: 600px) {
+    .register-page {
+        padding: 10px;
+    }
+
+    .register-form-container {
+        padding: 32px 20px;
     }
 
     .input-row {
         grid-template-columns: 1fr;
-    }
-
-    .role-options {
-        grid-template-columns: 1fr;
-        gap: 8px;
-    }
-
-    .role-option .role-label {
-        flex-direction: row;
-        padding: 12px 16px;
-        gap: 12px;
-    }
-
-    .register-bg .orb {
-        filter: blur(80px);
-        opacity: 0.25;
     }
 }

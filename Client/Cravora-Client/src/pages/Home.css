@@ -164,6 +164,7 @@
 .nav-cta:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 30px var(--accent-glow);
+    cursor: pointer;
 }
 
 .nav-cta::after {
@@ -427,6 +428,9 @@
     justify-content: center;
     align-items: center;
     animation: fadeIn 1s ease-out 0.5s both;
+    /* Parallax shift removed */
+    transform: translate(0, 0);
+    transition: transform 0.1s linear;
 }
 
 .hero-3d-card {
@@ -797,9 +801,15 @@
 /* ===========================
    FEATURES SECTION
    =========================== */
+
+
+
+
+
 .features-section {
     padding: var(--section-padding);
     position: relative;
+    z-index: 2;
 }
 
 .features-section .section-header {

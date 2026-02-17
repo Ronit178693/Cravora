@@ -1,5 +1,4 @@
 //  Context for sharing the three states all over the app
-
 import { createContext, useState } from "react";
 import { registerUser, loginUser, logoutUser } from "../api/authApi";
 
