@@ -6,8 +6,8 @@ import upload from "../Middlewares/imageMiddleware.js";
 const router = express.Router();
 
 // Public routes
-router.get("/", getAllOutlets);
-router.get("/:id", getOutletById);
+router.get("/allOutlet", getAllOutlets);
+router.get("/getOutlet:id", getOutletById);
 
 // Outlet owner routes
 router.post("/addOutlet", protect, authorize("Outlet"), upload.single("image"), addOutlet);
