@@ -63,7 +63,18 @@ export default function RegisterForm() {
         try {
             await register(form);
             toast.success("Account created successfully!");
-            setTimeout(() => navigate("/"), 1200);
+            if(form.role === "Outlet"){
+                setTimeout(() => navigate("/outlet-dashboard"), 1200);
+            }
+            else if(form.role === "Runner"){
+                setTimeout(() => navigate("/runner-dashboard"), 1200);
+            }
+            else if(form.role === "Student"){
+                setTimeout(() => navigate("/student-dashboard"), 1200);
+            }
+            else{
+                setTimeout(() => navigate("/"), 1200);
+            }
         } catch (err) {
             toast.error(err.message || "Something went wrong");
         }

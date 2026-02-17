@@ -10,9 +10,9 @@ router.get("/", getAllOutlets);
 router.get("/:id", getOutletById);
 
 // Outlet owner routes
-router.post("/", protect, authorize("Outlet"), upload.single("image"), addOutlet);
+router.post("/addOutlet", protect, authorize("Outlet"), upload.single("image"), addOutlet);
 router.get("/me/outlet", protect, authorize("Outlet"), getMyOutlet);
-router.put("/:id", protect, authorize("Outlet"), upload.single("image"), updateOutlet);
-router.delete("/:id", protect, authorize("Outlet"), deleteOutlet);
+router.put("/updateOutlet/:id", protect, authorize("Outlet"), upload.single("image"), updateOutlet);
+router.delete("/deleteOutlet/:id", protect, authorize("Outlet"), deleteOutlet);
 
 export default router;

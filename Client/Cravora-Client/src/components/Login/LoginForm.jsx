@@ -39,11 +39,24 @@ export default function LoginForm() {
             return;
         }
 
-        try {
+        
+            try {
             await login(form);
-            toast.success("Welcome back!");
-            setTimeout(() => navigate("/dashboard"), 1000); // Redirect to dashboard or home
-        } catch (err) {
+            toast.success("Account created successfully!");
+            if(form.role === "Outlet"){
+                setTimeout(() => navigate("/outlet-dashboard"), 1200);
+            }
+            else if(form.role === "Runner"){
+                setTimeout(() => navigate("/runner-dashboard"), 1200);
+            }
+            else if(form.role === "Student"){
+                setTimeout(() => navigate("/student-dashboard"), 1200);
+            }
+            else{
+                setTimeout(() => navigate("/"), 1200);
+            }
+        } 
+         catch (err) {
             toast.error(err.message || "Invalid credentials");
         }
     };
