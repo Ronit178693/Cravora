@@ -90,7 +90,7 @@ export const Login = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
         })
 
-        return res.status(200).json({ success: true, message: "User logged in successfully" });
+        return res.status(200).json({ success: true, message: "User logged in successfully", user });
     }
     catch (error) {
         return res.status(500).json({ success: false, message: error.message });

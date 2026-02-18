@@ -61,18 +61,18 @@ export default function RegisterForm() {
             return;
         }
         try {
-            await register(form);
+            const res = await register(form);
             toast.success("Account created successfully!");
-            if(form.role === "Outlet"){
+            if (res.user.role === "Outlet") {
                 setTimeout(() => navigate("/outlet-dashboard"), 1200);
             }
-            else if(form.role === "Runner"){
+            else if (res.user.role === "Runner") {
                 setTimeout(() => navigate("/runner-dashboard"), 1200);
             }
-            else if(form.role === "Student"){
+            else if (res.user.role === "Student") {
                 setTimeout(() => navigate("/student-dashboard"), 1200);
             }
-            else{
+            else {
                 setTimeout(() => navigate("/"), 1200);
             }
         } catch (err) {

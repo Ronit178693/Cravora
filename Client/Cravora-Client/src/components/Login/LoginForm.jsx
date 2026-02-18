@@ -38,18 +38,16 @@ export default function LoginForm() {
             setErrors(errs);
             return;
         }
-
-        
             try {
-            await login(form);
+            const res = await login(form);
             toast.success("Account created successfully!");
-            if(form.role === "Outlet"){
+            if(res.user.role === "Outlet"){
                 setTimeout(() => navigate("/outlet-dashboard"), 1200);
             }
-            else if(form.role === "Runner"){
+            else if(res.user.role === "Runner"){
                 setTimeout(() => navigate("/runner-dashboard"), 1200);
             }
-            else if(form.role === "Student"){
+            else if(res.user.role === "Student"){
                 setTimeout(() => navigate("/student-dashboard"), 1200);
             }
             else{
