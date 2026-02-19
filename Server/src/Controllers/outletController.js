@@ -5,11 +5,23 @@ import sendEmail from "../utils/sendEmail.js";
 
 // Create a new outlet (Only Outlet role users)
 export const addOutlet = async (req, res) => {
-    const { name, description, location, contactNumber, WorkingHours } = req.body;
+    // Because we are overwriting the string WorkingHours to an object later
+    let { name, description, location, contactNumber, WorkingHours } = req.body;
     try {
         if (!name || !location) {
             return res.status(400).json({ success: false, message: "Name and location are required" });
         }
+
+        // Parse WorkingHours if it is a string (files are uploaded via FormData which serializes objects to strings)
+        if (typeof WorkingHours === 'string') {
+            try {
+                WorkingHours = JSON.parse(WorkingHours);
+            } catch (error) {
+                console.error("Error parsing WorkingHours:", error);
+                return res.status(400).json({ success: false, message: "Invalid format for WorkingHours" });
+            }
+        }
+
         // Set the owner to the logged-in user
         const outlet = await Outlet.create({
             owner: req.user.id,
@@ -23,7 +35,7 @@ export const addOutlet = async (req, res) => {
         // Send welcome email to the outlet owner
         try {
             const user = await User.findById(req.user.id);
-            await sendEmail(
+            sendEmail(
                 user.email,
                 "Welcome to Cravora",
                 `<h1>Hi ${name}</h1>
@@ -70,15 +82,15 @@ export const getOutletById = async (req, res) => {
     }
 }
 
-// Get the logged-in user's outlet
+// Get the logged-in user's outlets
 export const getMyOutlet = async (req, res) => {
     const userID = req.user.id;
     try {
-        const outlet = await Outlet.findOne({ owner: userID });
-        if (!outlet) {
-            return res.status(404).json({ success: false, message: "You don't have an outlet registered" });
+        const outlets = await Outlet.find({ owner: userID });
+        if (!outlets) {
+            return res.status(404).json({ success: false, message: "Outlets not found" });
         }
-        return res.status(200).json({ success: true, outlet });
+        return res.status(200).json({ success: true, outlets });
     }
     catch (error) {
         return res.status(500).json({ success: false, message: error.message });

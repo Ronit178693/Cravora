@@ -1,0 +1,250 @@
+/* AddOutletModal.css */
+
+.add-outlet-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.add-outlet-modal-container {
+    width: 100%;
+    max-width: 800px;
+    animation: scaleIn 0.3s ease-out;
+}
+
+.add-outlet-modal-content {
+    background: var(--bg-card, #1a1a2e);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 40px;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.add-outlet-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.add-outlet-close-btn:hover {
+    color: var(--text-primary);
+}
+
+.add-outlet-title {
+    font-family: var(--font-display);
+    margin-bottom: 24px;
+    font-size: 1.8rem;
+    color: var(--text-primary);
+}
+
+.add-outlet-form {
+    display: grid;
+    gap: 20px;
+}
+
+.add-outlet-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.add-outlet-input {
+    width: 100%;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.add-outlet-input:focus {
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.add-outlet-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.add-outlet-file-input {
+    padding: 10px;
+}
+
+.add-outlet-label {
+    display: block;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.add-outlet-image-preview {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+.add-outlet-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.add-outlet-btn-cancel,
+.add-outlet-btn-submit {
+    justify-content: center;
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Validation Errors */
+.error-text {
+    color: #ef4444;
+    font-size: 0.8rem;
+    margin-top: 4px;
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.input-error {
+    border-color: #ef4444 !important;
+}
+
+.input-error:focus {
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Input Group with Icons */
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 16px;
+    color: var(--text-secondary);
+    pointer-events: none;
+    transition: color 0.3s;
+}
+
+.input-group:focus-within .input-icon {
+    color: var(--accent);
+}
+
+.add-outlet-input.with-icon {
+    padding-left: 48px;
+}
+
+.textarea-group {
+    align-items: flex-start;
+}
+
+.textarea-icon {
+    top: 16px;
+}
+
+/* File Upload styling */
+.file-upload-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.file-upload-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.file-upload-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    color: var(--text-secondary);
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.file-upload-input:hover+.file-upload-label,
+.file-upload-input:focus+.file-upload-label {
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+}
+
+.image-preview-container {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.image-preview-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    color: white;
+}
+
+.image-preview-container:hover .image-preview-overlay {
+    opacity: 1;
+}

@@ -13,3 +13,4 @@ export const updateOutlet = (id, data) => API.put(API_PATHS.OUTLET.UPDATE.replac
 export const deleteOutlet = (id) => API.delete(API_PATHS.OUTLET.DELETE.replace(':id', id));
 export const getAllOutlets = () => API.get(API_PATHS.OUTLET.GET_ALL);
 export const getOutletById = (id) => API.get(API_PATHS.OUTLET.GET_BY_ID.replace(':id', id));
+export const getMyOutlet = () => API.get(API_PATHS.OUTLET.MY_OUTLET);
