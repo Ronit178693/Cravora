@@ -87,6 +87,7 @@ const AddOutletModal = ({ onClose, onSuccess }) => {
         setErrors({}); // Clear previous errors
 
         try {
+            // Built in js oject used to send form data to the server especially when sending an img., pdf 
             const data = new FormData();
             data.append('name', formData.name);
             data.append('description', formData.description);
@@ -108,7 +109,9 @@ const AddOutletModal = ({ onClose, onSuccess }) => {
             const response = await addOutlet(data);
             console.log("Outlet added:", response.data);
             toast.success("Outlet added successfully");
-            if (onSuccess) onSuccess(); // Refresh list on success
+            if (response.data.success) {
+                onSuccess(); // Refresh list on success
+            }
             onClose();
         } catch (error) {
             console.error("Error adding outlet:", error);

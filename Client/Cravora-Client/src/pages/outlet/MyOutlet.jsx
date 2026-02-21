@@ -103,6 +103,8 @@ const MyOutlet = () => {
                     </div>
 
                     {/* Add Outlet Modal Overlay */}
+                    {/* conditional rendering in React */}
+                    {/* If showForm is true, then AddOutletModal will be rendered */}
                     {showForm && (
                         <AddOutletModal
                             onClose={() => setShowForm(false)}

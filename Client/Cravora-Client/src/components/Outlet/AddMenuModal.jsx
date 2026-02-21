@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-import { addMenuItem } from '../../api/outletApi';
+import { addMenuItem } from '../../api/menuApi';
 import { X, Type, FileText, Image as ImageIcon, Upload, Check, XCircle, DollarSign, Tag } from 'lucide-react';
 import './AddOutletModal.css'; // Reusing the same CSS
 
@@ -18,7 +18,7 @@ const AddMenuModal = ({ onClose, onSuccess, outletId }) => {
     const [errors, setErrors] = useState({});
 
     // Predefined categories - can be moved to constants later
-    const categories = ["Starters", "Main Course", "Desserts", "Beverages", "Snacks"];
+    const categories = ["Snacks", "Main Course", "Beverages", "Dessert", "Other"];
 
     const handleChange = (e) => {
         const { name, value } = e.target;

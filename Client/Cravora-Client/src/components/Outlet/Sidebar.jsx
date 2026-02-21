@@ -8,6 +8,7 @@ import './Sidebar.css';
 
 const Sidebar = () => {
     const { user, logout } = useContext(AuthContext);
+    // Gives access to the current url info
     const location = useLocation();
     const navigate = useNavigate();
 

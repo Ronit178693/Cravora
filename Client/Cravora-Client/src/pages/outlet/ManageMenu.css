@@ -1,0 +1,573 @@
+/* ManageMenu.css — Menu page specific styles */
+
+/* Outlet Selector */
+.outlet-selector-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.outlet-selector-wrapper label {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.outlet-selector {
+    flex: 1;
+    max-width: 400px;
+    padding: 14px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: var(--font-main);
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    transition: border-color 0.3s, background 0.3s;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23a0a0b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 48px;
+}
+
+.outlet-selector:focus {
+    border-color: var(--accent);
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.outlet-selector option {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    padding: 12px;
+}
+
+/* Menu Items Grid */
+.menu-items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+    padding-bottom: 80px;
+}
+
+/* Menu Item Card */
+.menu-item-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: var(--transition-smooth);
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-item-card:hover {
+    border-color: rgba(255, 107, 53, 0.15);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    transform: translateY(-4px);
+}
+
+/* Card Image Section */
+.menu-item-image-section {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.menu-item-image-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.menu-item-card:hover .menu-item-image-section img {
+    transform: scale(1.05);
+}
+
+.menu-item-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    cursor: pointer;
+}
+
+.menu-item-image-section:hover .menu-item-image-overlay {
+    opacity: 1;
+}
+
+/* Category Badge */
+.category-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+    z-index: 2;
+}
+
+.category-badge.snacks {
+    background: rgba(255, 165, 0, 0.8);
+    color: #fff;
+}
+
+.category-badge.main-course {
+    background: rgba(239, 68, 68, 0.8);
+    color: #fff;
+}
+
+.category-badge.beverages {
+    background: rgba(59, 130, 246, 0.8);
+    color: #fff;
+}
+
+.category-badge.dessert {
+    background: rgba(168, 85, 247, 0.8);
+    color: #fff;
+}
+
+.category-badge.other {
+    background: rgba(107, 114, 128, 0.8);
+    color: #fff;
+}
+
+/* Availability Badge */
+.availability-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+    z-index: 2;
+}
+
+.availability-badge.available {
+    background: rgba(34, 197, 94, 0.85);
+    color: white;
+}
+
+.availability-badge.unavailable {
+    background: rgba(239, 68, 68, 0.85);
+    color: white;
+}
+
+/* Card Content */
+.menu-item-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+}
+
+.menu-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.menu-item-name {
+    flex: 1;
+}
+
+.menu-item-price {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    white-space: nowrap;
+}
+
+.menu-item-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.toggle-switch input {
+    display: none;
+}
+
+.toggle-slider {
+    width: 40px;
+    height: 22px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 11px;
+    position: relative;
+    transition: background 0.3s;
+}
+
+.toggle-slider::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--text-secondary);
+    top: 3px;
+    left: 3px;
+    transition: all 0.3s;
+}
+
+.toggle-switch input:checked+.toggle-slider {
+    background: rgba(34, 197, 94, 0.6);
+}
+
+.toggle-switch input:checked+.toggle-slider::after {
+    left: 21px;
+    background: #22c55e;
+}
+
+/* Action Buttons */
+.btn-icon-danger {
+    padding: 8px;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon-danger:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px;
+    background: var(--bg-card);
+    border-radius: 24px;
+    border: 1px solid var(--border);
+}
+
+.empty-state h3 {
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+}
+
+.empty-state p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* ============== ORDER PAGE STYLES ============== */
+
+/* Order Tabs */
+.order-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    width: fit-content;
+}
+
+.order-tab {
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.order-tab:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.order-tab.active {
+    background: var(--gradient-1);
+    color: white;
+    box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+.order-tab .tab-count {
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.order-tab.active .tab-count {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* Order Card */
+.order-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    transition: var(--transition-smooth);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.order-card:hover {
+    border-color: rgba(255, 107, 53, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.order-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-id {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.order-status-badge {
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.order-status-badge.pending {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.order-status-badge.accepted {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.order-status-badge.preparing {
+    background: rgba(168, 85, 247, 0.15);
+    color: #a855f7;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.order-status-badge.outfordelivery {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.order-status-badge.delivered {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.order-status-badge.cancelled {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.order-customer-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.customer-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gradient-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.customer-details h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.customer-details p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.order-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+.order-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+}
+
+.order-item-row span:first-child {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.order-item-row span:last-child {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.order-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+}
+
+.order-total {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 700;
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.order-time {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.order-action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-accept {
+    padding: 10px 20px;
+    border-radius: 10px;
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-accept:hover {
+    background: rgba(34, 197, 94, 0.25);
+    border-color: rgba(34, 197, 94, 0.5);
+    transform: translateY(-1px);
+}
+
+.btn-reject {
+    padding: 10px 20px;
+    border-radius: 10px;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-reject:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    transform: translateY(-1px);
+}
+
+.btn-status-update {
+    padding: 10px 20px;
+    border-radius: 10px;
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-status-update:hover {
+    background: rgba(59, 130, 246, 0.25);
+    border-color: rgba(59, 130, 246, 0.5);
+    transform: translateY(-1px);
+}
+
+/* Orders list */
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-bottom: 80px;
+}

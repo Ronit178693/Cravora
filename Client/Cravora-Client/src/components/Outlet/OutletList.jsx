@@ -10,7 +10,6 @@ const OutletList = ({ outlets, onDelete, onUpdate }) => {
     const getImageUrl = (imagePath) => {
         if (!imagePath) return "https://via.placeholder.com/400x300?text=No+Image";
         if (imagePath.startsWith('http')) return imagePath;
-        return `http://localhost:5000/${imagePath.replace(/\\/g, '/')}`;
     };
 
     const handleImageUpload = (e, outletId) => {
