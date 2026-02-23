@@ -7,7 +7,6 @@ const MenuItemList = ({ menuItems, onDelete, onUpdate, onImageUpload }) => {
     const getImageUrl = (imagePath) => {
         if (!imagePath) return "https://via.placeholder.com/400x200?text=No+Image";
         if (imagePath.startsWith('http')) return imagePath;
-        return `http://localhost:5000/${imagePath.replace(/\\/g, '/')}`;
     };
 
     const getCategoryClass = (category) => {
