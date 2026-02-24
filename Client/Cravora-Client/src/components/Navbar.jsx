@@ -9,10 +9,9 @@ import { Search, ChevronDown, Truck, Package, X, User, LogOut, ShoppingBag, Cloc
 import '../pages/Home.css';
 
 const Navbar = () => {
+
     const { user } = useContext(AuthContext);
     const [scrolled, setScrolled] = useState(false);
-    // Mobile menu open is a boolean that is true when the mobile menu is open
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     // Dropdown open is a boolean that is true when the dropdown is open
     const [dropdownOpen, setDropdownOpen] = useState(false);
     // Profile panel open
@@ -23,12 +22,15 @@ const Navbar = () => {
     // Delivery history for profile panel
     const [deliveryHistory, setDeliveryHistory] = useState([]);
     const [deliveriesLoading, setDeliveriesLoading] = useState(false);
-
+    // Mobile menu open is a boolean that is true when the mobile menu is open
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    // Search query
     const [searchQuery, setSearchQuery] = useState('');
     // Stores searched results
     const [searchResults, setSearchResults] = useState([]);
     // Search focused is a boolean that is true when the search bar is focused
     const [searchFocused, setSearchFocused] = useState(false);
+    // All outlets
     const [allOutlets, setAllOutlets] = useState([]);
     const navigate = useNavigate();
     // To interact with DOM elements
@@ -75,10 +77,12 @@ const Navbar = () => {
                 setDeliveriesLoading(true);
                 try {
                     const res = await getMyDeliveries();
+                    // Sets both food deliveries and packages
                     setDeliveryHistory(res.data.deliveries || res.data.packages || []);
                 } catch { /* silent */ }
                 finally { setDeliveriesLoading(false); }
             };
+            // Calling both the created functions 
             loadOrders();
             loadDeliveries();
         }
@@ -109,20 +113,23 @@ const Navbar = () => {
 
     // Search logic — filter outlets and their menu items
     useEffect(() => {
+        // If there is no search query, return empty results
         if (!searchQuery.trim()) {
             setSearchResults([]);
             return;
         }
-
+        // Converts the search query to lowercase
         const q = searchQuery.toLowerCase();
+        // a results array to store the search results
         const results = [];
-
+        // Looping through all the outlets we get
         allOutlets.forEach(outlet => {
-            // Match outlet name
+            // Match outlet name to the input query
             if (outlet.name?.toLowerCase().includes(q)) {
+                // pushing the outlet to the results array
                 results.push({ type: 'outlet', id: outlet._id, name: outlet.name, sub: outlet.location || '' });
             }
-            // Match menu items
+            // Looping through the menu items
             outlet.menu?.forEach(item => {
                 if (item.name?.toLowerCase().includes(q) || item.category?.toLowerCase().includes(q)) {
                     results.push({
@@ -147,7 +154,7 @@ const Navbar = () => {
             console.error("Logout failed", error);
         }
     };
-
+    // When user clicks on the search result navigates the user to the resullt and resets the query and focus
     const handleSearchSelect = (result) => {
         navigate(`/outlet/${result.id}`);
         setSearchQuery('');
@@ -228,7 +235,7 @@ const Navbar = () => {
                                 ))}
                             </div>
                         )}
-
+                        {/* Shows no result found when search is focused and there are no results */}
                         {searchFocused && searchQuery && searchResults.length === 0 && (
                             <div className="nav-search-dropdown">
                                 <div className="nav-search-empty">No results found</div>
@@ -265,13 +272,13 @@ const Navbar = () => {
                                         onClick={() => setDropdownOpen(false)}
                                     >
                                         <Package size={16} />
-                                        Order Parcel from Gate
+                                        Order Parcel
                                     </Link>
                                 </div>
                             )}
                         </li>
 
-                        {/* Profile Icon — replaces Logout button */}
+                        {/* Profile Icon */}
                         <li className="nav-profile-wrapper" ref={profileRef}>
                             <button
                                 className="nav-profile-trigger"
