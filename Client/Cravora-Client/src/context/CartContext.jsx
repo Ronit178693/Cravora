@@ -11,8 +11,9 @@ const cartReducer = (state, action) => {
         case "ADD_ITEM": {
             const { item, outletId, outletName } = action.payload;
 
-            // If cart has items from a different outlet, clear and start fresh
+            // Checks if there is something in the cart then checks if the outlet id is same for addons 
             if (state.outletId && state.outletId !== outletId) {
+                // If condition passes the return the outlet details and add one item
                 return {
                     outletId,
                     outletName,
@@ -20,6 +21,7 @@ const cartReducer = (state, action) => {
                 };
             }
 
+            // if item already exists in the cart then increment the quantity
             const existing = state.items.find(i => i.menuItemId === item.menuItemId);
             if (existing) {
                 return {
@@ -46,13 +48,17 @@ const cartReducer = (state, action) => {
             return {
                 ...state,
                 items: state.items.filter(i => i.menuItemId !== action.payload),
+                // If the cart becomes empty after removing the item then clear the outlet details
                 ...(state.items.length === 1 ? { outletId: null, outletName: null } : {}),
             };
 
         case "UPDATE_QUANTITY": {
+            // Getting the following info from the object payload
             const { menuItemId, quantity } = action.payload;
+            // If the quantity is less than or equal to 0 then remove the item from the cart
             if (quantity <= 0) {
                 const newItems = state.items.filter(i => i.menuItemId !== menuItemId);
+                
                 return {
                     ...state,
                     items: newItems,
@@ -68,6 +74,7 @@ const cartReducer = (state, action) => {
         }
 
         case "CLEAR_CART":
+            // Clears the cart data
             return { items: [], outletId: null, outletName: null };
 
         default:
@@ -93,6 +100,7 @@ export function CartProvider({ children }) {
 
     const clearCart = () => dispatch({ type: "CLEAR_CART" });
 
+    // Here sum is the accumilator and i is the menu item 
     const totalItems = cart.items.reduce((sum, i) => sum + i.quantity, 0);
     const totalPrice = cart.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
