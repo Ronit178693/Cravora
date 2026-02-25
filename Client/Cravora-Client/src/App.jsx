@@ -9,8 +9,9 @@ import OutletOrders from "./pages/outlet/OutletOrders";
 import Dashboard from "./pages/Dashboard";
 import OutletDetail from "./pages/OutletDetail";
 import Checkout from "./pages/Checkout";
-// The Order tracking feature should be implimented on the checkout page itself
-// import OrderTracking from "./pages/OrderTracking";
+import RunnerDashboard from "./pages/RunnerDashboard";
+import OrderParcel from "./pages/OrderParcel";
+
 
 import "./App.css";
 
@@ -30,7 +31,10 @@ function App() {
         <Route path="/student-dashboard" element={<Dashboard />} />
         <Route path="/outlet/:id" element={<OutletDetail />} />
         <Route path="/checkout" element={<Checkout />} />
-        {/* <Route path="/order/:id" element={<OrderTracking />} /> */}
+        {/* Runner & Parcel routes */}
+        <Route path="/runner-dashboard" element={<RunnerDashboard />} />
+        <Route path="/order-parcel" element={<OrderParcel />} />
+       
       </Routes>
     </Router>
   );
