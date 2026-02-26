@@ -90,15 +90,18 @@ export const getOrderById = async (req, res) => {
 // Get all orders for the logged-in outlet owner
 export const getOutletOrders = async (req, res) => {
     try {
-        // Find the outlet owned by the logged-in user
-        const outlet = await Outlet.findOne({ owner: req.user.id });
-        if (!outlet) {
+        // Find ALL outlets owned by the logged-in user
+        const outlets = await Outlet.find({ owner: req.user.id });
+        if (!outlets || outlets.length === 0) {
             return res.status(404).json({ success: false, message: "You don't have an outlet registered" });
         }
-
-        const orders = await Order.find({ outlet: outlet._id })
+        // Mapping the outlets to get their IDs
+        const outletIds = outlets.map(o => o._id);
+        // Finding all orders for the logged-in outlet owner
+        const orders = await Order.find({ outlet: { $in: outletIds } })
             .populate("customer", "name email phoneNumber")
             .populate("runner", "name phoneNumber")
+            .populate("outlet", "name location")
             .sort({ createdAt: -1 });
 
         return res.status(200).json({ success: true, orders });
