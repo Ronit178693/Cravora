@@ -11,6 +11,7 @@ import OutletDetail from "./pages/OutletDetail";
 import Checkout from "./pages/Checkout";
 import RunnerDashboard from "./pages/RunnerDashboard";
 import OrderParcel from "./pages/OrderParcel";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 
 import "./App.css";
@@ -24,21 +25,19 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/login" element={<Login />} />
         {/* Outlet owner routes */}
-        <Route path="/outlet-dashboard" element={<MyOutlet />} />
-        <Route path="/menu" element={<ManageMenu />} />
-        <Route path="/orders" element={<OutletOrders />} />
+        <Route path="/outlet-dashboard" element={<ProtectedRoute roles={["Outlet"]}><MyOutlet /></ProtectedRoute>} />
+        <Route path="/menu" element={<ProtectedRoute roles={["Outlet"]}><ManageMenu /></ProtectedRoute>} />
+        <Route path="/orders" element={<ProtectedRoute roles={["Outlet"]}><OutletOrders /></ProtectedRoute>} />
         {/* Student routes */}
-        <Route path="/student-dashboard" element={<Dashboard />} />
-        <Route path="/outlet/:id" element={<OutletDetail />} />
-        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/student-dashboard" element={<ProtectedRoute roles={["Student"]}><Dashboard /></ProtectedRoute>} />
+        <Route path="/outlet/:id" element={<ProtectedRoute roles={["Student"]}><OutletDetail /></ProtectedRoute>} />
+        <Route path="/checkout" element={<ProtectedRoute roles={["Student"]}><Checkout /></ProtectedRoute>} />
         {/* Runner & Parcel routes */}
-        <Route path="/runner-dashboard" element={<RunnerDashboard />} />
-        <Route path="/order-parcel" element={<OrderParcel />} />
-       
+        <Route path="/runner-dashboard" element={<ProtectedRoute roles={["Student", "DeliveryPartner"]}><RunnerDashboard /></ProtectedRoute>} />
+        <Route path="/order-parcel" element={<ProtectedRoute roles={["Student", "DeliveryPartner"]}><OrderParcel /></ProtectedRoute>} />
       </Routes>
     </Router>
   );
 }
 
 export default App;
-
