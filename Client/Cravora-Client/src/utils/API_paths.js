@@ -1,3 +1,7 @@
+// Backend URL and conditions for production and development
+// mport.meta.env.MODE is a built-in variable in Vite that tells you the current mode
+// "development" is the default mode for development
+// "production" is the default mode for production
 export const baseURL = import.meta.env.MODE === "development" ? "http://localhost:5000" : "https://cravora.onrender.com";
 
 export const API_PATHS = {
