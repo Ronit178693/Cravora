@@ -109,13 +109,13 @@ export const updateOutlet = async (req, res) => {
             return res.status(403).json({ success: false, message: "You are not authorized to update this outlet" });
         }
         const { name, description, location, contactNumber, WorkingHours, isOpen } = req.body;
-        // Update only the fields that are provided
-        if (name) outlet.name = name;
-        if (description) outlet.description = description;
-        if (location) outlet.location = location;
-        if (contactNumber) outlet.contactNumber = contactNumber;
+        // Update only the fields that are provided (use !== undefined to allow clearing)
+        if (name !== undefined) outlet.name = name;
+        if (description !== undefined) outlet.description = description;
+        if (location !== undefined) outlet.location = location;
+        if (contactNumber !== undefined) outlet.contactNumber = contactNumber;
         if (req.file) outlet.images.push(req.file.path);
-        if (WorkingHours) outlet.WorkingHours = WorkingHours;
+        if (WorkingHours !== undefined) outlet.WorkingHours = WorkingHours;
         if (isOpen !== undefined) outlet.isOpen = isOpen;
 
         await outlet.save();
