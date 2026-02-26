@@ -1,5 +1,5 @@
 import express from "express";
-import { placeOrder, getMyOrders, getOrderById, getOutletOrders, acceptOrder, updateOrderStatus, cancelOrder, getAvailableOrders, acceptDelivery } from "../Controllers/orderController.js";
+import { placeOrder, getMyOrders, getOrderById, getOutletOrders, acceptOrder, updateOrderStatus, cancelOrder, getAvailableOrders, acceptDelivery, getMyOrderDeliveries } from "../Controllers/orderController.js";
 import { protect } from "../Middlewares/authMiddleware.js";
 import { authorize } from "../Middlewares/roleMiddleware.js";
 
@@ -15,6 +15,7 @@ router.put("/:id/accept", protect, authorize("Outlet"), acceptOrder);
 
 // Runner routes (Student or DeliveryPartner)
 router.get("/available", protect, authorize("Student", "DeliveryPartner"), getAvailableOrders);
+router.get("/my-deliveries", protect, authorize("Student", "DeliveryPartner"), getMyOrderDeliveries);
 router.put("/:id/accept-delivery", protect, authorize("Student", "DeliveryPartner"), acceptDelivery);
 
 // Shared routes (customer, outlet owner, or runner)

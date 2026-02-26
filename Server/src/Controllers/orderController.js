@@ -276,3 +276,20 @@ export const acceptDelivery = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 }
+
+
+// Get all order deliveries for the logged-in runner
+export const getMyOrderDeliveries = async (req, res) => {
+    const userID = req.user.id;
+    try {
+        const orders = await Order.find({ runner: userID })
+            .populate("customer", "name phoneNumber")
+            .populate("outlet", "name location images")
+            .sort({ createdAt: -1 });
+
+        return res.status(200).json({ success: true, orders });
+    }
+    catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}
