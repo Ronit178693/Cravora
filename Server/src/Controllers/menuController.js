@@ -43,10 +43,10 @@ export const updateMenuItem = async (req, res) => {
             return res.status(404).json({ success: false, message: "Menu item not found" });
         }
         const { name, description, price, category, isAvailable } = req.body;
-        if (name) menuItem.name = name;
-        if (description) menuItem.description = description;
-        if (price) menuItem.price = price;
-        if (category) menuItem.category = category;
+        if (name !== undefined) menuItem.name = name;
+        if (description !== undefined) menuItem.description = description;
+        if (price !== undefined) menuItem.price = price;
+        if (category !== undefined) menuItem.category = category;
         if (req.file) menuItem.image = req.file.path;
         if (isAvailable !== undefined) menuItem.isAvailable = isAvailable;
 
