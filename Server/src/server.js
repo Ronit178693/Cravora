@@ -19,10 +19,17 @@ Connection();
 
 app.use(cors(
     {
-        origin: [
-            "http://localhost:5173",
-            process.env.CLIENT_URL  
-        ],
+        origin: function (origin, callback) {
+            if (!origin) return callback(null, true);
+            const allowedOrigins = ["http://localhost:5173", "https://cravora-chi.vercel.app"];
+            if (process.env.CLIENT_URL) allowedOrigins.push(process.env.CLIENT_URL);
+
+            if (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
+                callback(null, true);
+            } else {
+                callback(new Error("Not allowed by CORS"));
+            }
+        },
         credentials: true
     }
 ))
