@@ -1,6 +1,8 @@
 import User from "../Models/User.js";
 import { hashPassword, comparePassword } from "../Models/User.js";
 import jwt from "jsonwebtoken";
+// For sending OTP
+import crypto from "crypto";
 import sendEmail from "../utils/sendEmail.js";
 
 
@@ -49,6 +51,8 @@ export const Register = async (req, res) => {
             catch (error) {
                 console.log(error);
             }
+            // Clearing the password before sending a response to the client
+            newUser.password = undefined;
             return res.status(201).json({ success: true, message: "User created successfully", user: newUser });
         }
     }
@@ -90,6 +94,7 @@ export const Login = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
         })
 
+        user.password = undefined;
         return res.status(200).json({ success: true, message: "User logged in successfully", user });
     }
     catch (error) {
@@ -122,7 +127,7 @@ export const passwordResetOTP = async (req, res) => {
             return res.status(400).json({ success: false, message: "User not found" });
         }
         // Generate a 6-digit OTP and set expiration to 5 minutes
-        const otp = Math.floor(100000 + Math.random() * 900000);
+        const otp = crypto.randomInt(100000, 999999);
         user.otp = otp;
         user.otpExpires = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
         await user.save();
