@@ -37,23 +37,25 @@ export const Register = async (req, res) => {
                 sameSite: "strict",
                 maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
             })
-            // Sending mail for creating a new account with us
-            try {
-                await sendEmail(
-                    email,
-                    "Welcome to Cravora",
-                    `<h1>Hi ${name}</h1>
+            // Clearing the password before sending a response to the client
+            newUser.password = undefined;
+
+            // Send response FIRST so the client UI doesn't hang
+            res.status(201).json({ success: true, message: "User created successfully", user: newUser });
+
+            // Send mail asynchronously (fire and forget) without blocking the response
+            sendEmail(
+                email,
+                "Welcome to Cravora",
+                `<h1>Hi ${name}</h1>
                 <p>Thank you for creating an account with us</p>
                 <p>Best Regards</p>
                 <p>Cravora</p>`
-                )
-            }
-            catch (error) {
-                console.log(error);
-            }
-            // Clearing the password before sending a response to the client
-            newUser.password = undefined;
-            return res.status(201).json({ success: true, message: "User created successfully", user: newUser });
+            ).catch(error => {
+                console.error("Failed to send welcome email:", error);
+            });
+
+            return;
         }
     }
     catch (error) {
