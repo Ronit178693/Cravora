@@ -33,8 +33,8 @@ export const Register = async (req, res) => {
             // Evey time any request is made after logging in or signing in the cookie is automatically sent from the client to the server
             res.cookie("token", token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV == "production", // The cookie is only sent over HTTPS on local hoast it fails sending cookie
-                sameSite: "strict",
+                secure: process.env.NODE_ENV === "production", // require HTTPS in production
+                sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", // allow cross-site cookies in production
                 maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
             })
             // Clearing the password before sending a response to the client
@@ -91,8 +91,8 @@ export const Login = async (req, res) => {
         // Evey time any request is made after logging in or signing in the cookie is automatically sent from the client to the server
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV == "production", // The cookie is only sent over HTTPS on local hoast it fails sending cookie
-            sameSite: "strict",
+            secure: process.env.NODE_ENV === "production", // require HTTPS in production
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", // allow cross-site cookies in production
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
         })
 
@@ -108,8 +108,8 @@ export const Logout = async (req, res) => {
     try {
         res.clearCookie("token", {
             httpOnly: true,
-            secure: process.env.NODE_ENV == "production", // The cookie is only sent over HTTPS on local hoast it fails sending cookie
-            sameSite: "strict",
+            secure: process.env.NODE_ENV === "production", // require HTTPS in production
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", // allow cross-site cookies in production
         })
         return res.status(200).json({ success: true, message: "User logged out successfully" });
     }
