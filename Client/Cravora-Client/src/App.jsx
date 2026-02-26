@@ -11,6 +11,7 @@ import OutletDetail from "./pages/OutletDetail";
 import Checkout from "./pages/Checkout";
 import RunnerDashboard from "./pages/RunnerDashboard";
 import OrderParcel from "./pages/OrderParcel";
+import DeliveryHistory from "./pages/DeliveryHistory";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 
@@ -35,6 +36,7 @@ function App() {
         {/* Runner & Parcel routes */}
         <Route path="/runner-dashboard" element={<ProtectedRoute roles={["Student", "DeliveryPartner"]}><RunnerDashboard /></ProtectedRoute>} />
         <Route path="/order-parcel" element={<ProtectedRoute roles={["Student", "DeliveryPartner"]}><OrderParcel /></ProtectedRoute>} />
+        <Route path="/delivery-history" element={<ProtectedRoute roles={["Student", "DeliveryPartner"]}><DeliveryHistory /></ProtectedRoute>} />
       </Routes>
     </Router>
   );

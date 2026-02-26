@@ -15,3 +15,4 @@ export const acceptDelivery = (id) => API.put(API_PATHS.ORDER.ACCEPT_DELIVERY.re
 export const getOrderById = (id) => API.get(API_PATHS.ORDER.GET_BY_ID.replace(':id', id));
 export const updateOrderStatus = (id, status) => API.put(API_PATHS.ORDER.UPDATE_STATUS.replace(':id', id), { status });
 export const cancelOrder = (id) => API.put(API_PATHS.ORDER.CANCEL_ORDER.replace(':id', id));
+export const getMyOrderDeliveries = () => API.get(API_PATHS.ORDER.MY_ORDER_DELIVERIES);

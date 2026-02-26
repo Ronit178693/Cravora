@@ -42,6 +42,7 @@ export const API_PATHS = {
         GET_BY_ID: "/api/orders/:id",
         UPDATE_STATUS: "/api/orders/:id/status",
         CANCEL_ORDER: "/api/orders/:id/cancel",
+        MY_ORDER_DELIVERIES: "/api/orders/my-deliveries",
     },
     PACKAGE: {
         CREATE: "/api/packages/",

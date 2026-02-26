@@ -1,0 +1,897 @@
+/* ==============================
+   StudentDashboard.css
+   Shared styles for student-facing pages
+   ============================== */
+
+/* -------- Layout -------- */
+.sd-page {
+    min-height: 100vh;
+    background: var(--bg-primary);
+    padding-top: 90px;
+}
+
+.sd-container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 40px 24px 120px;
+}
+
+.sd-page-title {
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.sd-page-title span {
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sd-page-subtitle {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-bottom: 40px;
+}
+
+/* -------- Outlets Grid -------- */
+.sd-outlets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 28px;
+}
+
+/* -------- Outlet Card -------- */
+.sd-outlet-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    animation: sdFadeUp 0.5s ease-out both;
+    display: flex;
+    flex-direction: column;
+}
+
+.sd-outlet-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255, 107, 53, 0.2);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+}
+
+.sd-outlet-card-img {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.sd-outlet-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.sd-outlet-card:hover .sd-outlet-card-img img {
+    transform: scale(1.08);
+}
+
+.sd-outlet-card-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sd-outlet-card-placeholder span {
+    font-size: 4rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.3);
+    font-family: var(--font-display);
+}
+
+.sd-open-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: rgba(34, 197, 94, 0.85);
+    color: white;
+    backdrop-filter: blur(8px);
+}
+
+.sd-outlet-card-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.sd-outlet-card-name {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.sd-outlet-card-desc {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.sd-outlet-card-meta {
+    display: flex;
+    gap: 16px;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+}
+
+.sd-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.sd-meta-item svg {
+    color: var(--accent);
+}
+
+/* -------- Outlet Detail Page -------- */
+.sd-outlet-hero {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    background-size: cover;
+    background-position: center;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 36px;
+}
+
+.sd-outlet-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10, 10, 15, 0.95), transparent 60%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 32px;
+}
+
+.sd-outlet-hero h1 {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.sd-outlet-hero p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-top: 6px;
+    max-width: 600px;
+}
+
+.sd-outlet-info-row {
+    display: flex;
+    gap: 24px;
+    margin-top: 12px;
+}
+
+/* -------- Category Tabs -------- */
+.sd-category-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 0 20px;
+    position: sticky;
+    top: 80px;
+    z-index: 10;
+    background: var(--bg-primary);
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.sd-category-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.sd-category-tab {
+    padding: 10px 22px;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-secondary);
+    font-family: var(--font-main);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.25s;
+}
+
+.sd-category-tab:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-primary);
+    border-color: rgba(255, 107, 53, 0.2);
+}
+
+.sd-category-tab.active {
+    background: var(--gradient-1);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+/* -------- Category Section -------- */
+.sd-category-section {
+    margin-bottom: 40px;
+    scroll-margin-top: 140px;
+}
+
+.sd-category-heading {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sd-category-heading::before {
+    content: '';
+    width: 4px;
+    height: 24px;
+    border-radius: 4px;
+    background: var(--gradient-1);
+}
+
+.sd-category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+/* -------- Menu Item Card (Redesigned) -------- */
+.sd-menu-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: var(--transition-smooth);
+    animation: sdFadeUp 0.4s ease-out both;
+    display: flex;
+    flex-direction: column;
+}
+
+.sd-menu-item:hover {
+    border-color: rgba(255, 107, 53, 0.2);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-4px);
+}
+
+.sd-menu-item-img-wrapper {
+    position: relative;
+    height: 170px;
+    overflow: hidden;
+}
+
+.sd-menu-item-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.sd-menu-item:hover .sd-menu-item-img {
+    transform: scale(1.06);
+}
+
+.sd-menu-item-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+}
+
+.sd-menu-item-unavailable {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #ef4444;
+    letter-spacing: 1px;
+}
+
+/* Add button — bottom right corner of image */
+.sd-menu-item-add-corner {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 3;
+}
+
+.sd-add-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: var(--gradient-1);
+    color: white;
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    transition: all 0.2s;
+}
+
+.sd-add-btn:hover {
+    transform: scale(1.06);
+    box-shadow: 0 6px 24px var(--accent-glow);
+}
+
+.sd-add-qty {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.sd-add-qty button {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.sd-add-qty button:hover {
+    background: var(--accent);
+    color: white;
+}
+
+.sd-add-qty span {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 24px;
+    text-align: center;
+}
+
+/* Menu item info */
+.sd-menu-item-info {
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sd-menu-item-name {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.sd-menu-item-price {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sd-menu-item-desc {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+}
+
+/* Keep old classes used in checkout */
+.sd-btn-add {
+    width: 100%;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    background: var(--gradient-1);
+    color: white;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.sd-btn-add:hover {
+    box-shadow: 0 4px 20px var(--accent-glow);
+    transform: translateY(-1px);
+}
+
+.sd-qty-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.sd-qty-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sd-qty-btn:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.sd-qty-value {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 20px;
+    text-align: center;
+}
+
+
+/* -------- Floating Checkout Button -------- */
+.sd-checkout-fab {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    background: var(--gradient-1);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 8px 32px var(--accent-glow);
+    transition: all 0.3s;
+    animation: sdFabPulse 2s ease-in-out infinite;
+}
+
+.sd-checkout-fab:hover {
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 12px 40px var(--accent-glow);
+}
+
+.sd-fab-badge {
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.25);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+@keyframes sdFabPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 8px 32px var(--accent-glow);
+    }
+
+    50% {
+        box-shadow: 0 8px 48px rgba(255, 107, 53, 0.5);
+    }
+}
+
+/* -------- Checkout Page -------- */
+.sd-checkout-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 32px;
+}
+
+@media (max-width: 900px) {
+    .sd-checkout-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.sd-checkout-items {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.sd-checkout-item {
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    align-items: center;
+}
+
+.sd-checkout-item-img {
+    width: 72px;
+    height: 72px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.sd-checkout-item-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sd-checkout-item-info {
+    flex: 1;
+}
+
+.sd-checkout-item-info h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.sd-checkout-item-info p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.sd-checkout-item-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.sd-checkout-item-price {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--accent);
+}
+
+/* Summary Card */
+.sd-summary-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: fit-content;
+    position: sticky;
+    top: 110px;
+}
+
+.sd-summary-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.sd-summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.sd-summary-row.total {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+}
+
+.sd-summary-row.total span:last-child {
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sd-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sd-input-group label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.sd-input-group input {
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    font-family: var(--font-main);
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.sd-input-group input:focus {
+    border-color: var(--accent);
+}
+
+.sd-btn-place-order {
+    width: 100%;
+    padding: 14px;
+    border-radius: var(--radius-md);
+    background: var(--gradient-1);
+    color: white;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.sd-btn-place-order:hover {
+    box-shadow: 0 4px 24px var(--accent-glow);
+    transform: translateY(-2px);
+}
+
+.sd-btn-place-order:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* -------- Order Tracking -------- */
+.sd-tracking-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 36px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.sd-tracking-header {
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+.sd-tracking-header h2 {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.sd-tracking-header p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Timeline */
+.sd-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 36px;
+}
+
+.sd-timeline-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    position: relative;
+    padding-bottom: 32px;
+}
+
+.sd-timeline-step:last-child {
+    padding-bottom: 0;
+}
+
+.sd-timeline-dot-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.sd-timeline-dot {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    border: 2px solid var(--border);
+    background: var(--bg-secondary);
+    color: var(--text-muted);
+    transition: all 0.4s;
+}
+
+.sd-timeline-step.active .sd-timeline-dot {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.sd-timeline-step.completed .sd-timeline-dot {
+    border-color: #22c55e;
+    background: #22c55e;
+    color: white;
+}
+
+.sd-timeline-line {
+    position: absolute;
+    top: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: calc(100% - 4px);
+    background: var(--border);
+}
+
+.sd-timeline-step.completed .sd-timeline-line {
+    background: #22c55e;
+}
+
+.sd-timeline-content h4 {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+    margin-top: 6px;
+}
+
+.sd-timeline-content p {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.sd-tracking-details {
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sd-tracking-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.sd-tracking-row span:last-child {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* -------- Empty / Loading States -------- */
+.sd-loading {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.sd-empty {
+    text-align: center;
+    padding: 80px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+}
+
+.sd-empty h3 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.sd-empty p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* -------- Animation -------- */
+@keyframes sdFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* -------- Back Link -------- */
+.sd-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+    transition: color 0.2s;
+}
+
+.sd-back-link:hover {
+    color: var(--accent);
+}
