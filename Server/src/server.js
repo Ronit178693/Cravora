@@ -19,7 +19,10 @@ Connection();
 
 app.use(cors(
     {
-        origin: "http://localhost:5173",
+        origin: [
+            "http://localhost:5173",
+            "https://cravora-chi.vercel.app"
+        ],
         credentials: true
     }
 ))

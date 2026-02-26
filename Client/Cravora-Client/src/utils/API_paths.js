@@ -1,4 +1,4 @@
-export const baseURL = "http://localhost:5000"
+export const baseURL = import.meta.env.MODE === "development" ? "http://localhost:5000" : "https://cravora.onrender.com";
 
 export const API_PATHS = {
     AUTH: {
