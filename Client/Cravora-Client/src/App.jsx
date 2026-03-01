@@ -34,9 +34,9 @@ function App() {
         <Route path="/outlet/:id" element={<ProtectedRoute roles={["Student"]}><OutletDetail /></ProtectedRoute>} />
         <Route path="/checkout" element={<ProtectedRoute roles={["Student"]}><Checkout /></ProtectedRoute>} />
         {/* Runner & Parcel routes */}
-        <Route path="/runner-dashboard" element={<ProtectedRoute roles={["Student", "DeliveryPartner"]}><RunnerDashboard /></ProtectedRoute>} />
-        <Route path="/order-parcel" element={<ProtectedRoute roles={["Student", "DeliveryPartner"]}><OrderParcel /></ProtectedRoute>} />
-        <Route path="/delivery-history" element={<ProtectedRoute roles={["Student", "DeliveryPartner"]}><DeliveryHistory /></ProtectedRoute>} />
+        <Route path="/runner-dashboard" element={<ProtectedRoute roles={["Student"]}><RunnerDashboard /></ProtectedRoute>} />
+        <Route path="/order-parcel" element={<ProtectedRoute roles={["Student"]}><OrderParcel /></ProtectedRoute>} />
+        <Route path="/delivery-history" element={<ProtectedRoute roles={["Student"]}><DeliveryHistory /></ProtectedRoute>} />
       </Routes>
     </Router>
   );

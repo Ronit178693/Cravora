@@ -211,20 +211,6 @@ export default function RegisterForm() {
                                 <span className="role-name">Outlet</span>
                             </label>
                         </div>
-                        <div className="role-option">
-                            <input
-                                type="radio"
-                                id="role-delivery"
-                                name="role"
-                                value="DeliveryPartner"
-                                checked={form.role === "DeliveryPartner"}
-                                onChange={handleChange}
-                            />
-                            <label htmlFor="role-delivery" className="role-label">
-                                <Bike size={24} className="role-emoji" />
-                                <span className="role-name">Delivery</span>
-                            </label>
-                        </div>
                     </div>
                 </div>
 
