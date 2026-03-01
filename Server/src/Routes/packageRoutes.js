@@ -9,11 +9,11 @@ const router = express.Router();
 router.post("/", protect, authorize("Student"), createPackage);
 router.get("/my-packages", protect, authorize("Student"), getMyPackages);
 
-// Runner routes (Student or DeliveryPartner)
-router.get("/available", protect, authorize("Student", "DeliveryPartner"), getAvailablePackages);
-router.get("/my-deliveries", protect, authorize("Student", "DeliveryPartner"), getMyDeliveries);
-router.put("/:id/accept", protect, authorize("Student", "DeliveryPartner"), acceptPackage);
-router.put("/:id/status", protect, authorize("Student", "DeliveryPartner"), updatePackageStatus);
+// Runner routes (Student)
+router.get("/available", protect, authorize("Student"), getAvailablePackages);
+router.get("/my-deliveries", protect, authorize("Student"), getMyDeliveries);
+router.put("/:id/accept", protect, authorize("Student"), acceptPackage);
+router.put("/:id/status", protect, authorize("Student"), updatePackageStatus);
 
 // Shared routes
 router.get("/:id", protect, getPackageById);

@@ -8,7 +8,7 @@ const router = express.Router();
 // All dashboard routes require authentication
 router.get("/", protect, getDashboard);
 router.get("/profile", protect, getProfile);
-router.get("/runner", protect, authorize("Student", "DeliveryPartner"), getRunnerDashboard);
-router.get("/runner/stats", protect, authorize("Student", "DeliveryPartner"), getRunnerStats);
+router.get("/runner", protect, authorize("Student"), getRunnerDashboard);
+router.get("/runner/stats", protect, authorize("Student"), getRunnerStats);
 
 export default router;

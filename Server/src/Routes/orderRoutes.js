@@ -13,10 +13,10 @@ router.get("/my-orders", protect, authorize("Student"), getMyOrders);
 router.get("/outlet-orders", protect, authorize("Outlet"), getOutletOrders);
 router.put("/:id/accept", protect, authorize("Outlet"), acceptOrder);
 
-// Runner routes (Student or DeliveryPartner)
-router.get("/available", protect, authorize("Student", "DeliveryPartner"), getAvailableOrders);
-router.get("/my-deliveries", protect, authorize("Student", "DeliveryPartner"), getMyOrderDeliveries);
-router.put("/:id/accept-delivery", protect, authorize("Student", "DeliveryPartner"), acceptDelivery);
+// Runner routes (Student)
+router.get("/available", protect, authorize("Student"), getAvailableOrders);
+router.get("/my-deliveries", protect, authorize("Student"), getMyOrderDeliveries);
+router.put("/:id/accept-delivery", protect, authorize("Student"), acceptDelivery);
 
 // Shared routes (customer, outlet owner, or runner)
 router.get("/:id", protect, getOrderById);
