@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Minus, Plus, Trash2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { baseURL } from '../utils/API_paths';
 import { placeOrder } from '../api/orderApi';
 import Navbar from '../components/Navbar';
 import OrderTracker from '../components/OrderTracker';
@@ -19,7 +20,7 @@ const Checkout = () => {
     const getImageUrl = (img) => {
         if (!img) return null;
         if (img.startsWith('http')) return img;
-        return `http://localhost:5000/${img.replace(/\\/g, '/')}`;
+        return `${baseURL}/${img.replace(/\\/g, '/')}`;
     };
 
     const handlePlaceOrder = async () => {

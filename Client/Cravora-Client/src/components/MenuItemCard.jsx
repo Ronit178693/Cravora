@@ -1,6 +1,7 @@
 import React from 'react';
 import { Plus, Minus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { baseURL } from '../utils/API_paths';
 
 const MenuItemCard = ({ item, outletId, outletName, index = 0 }) => {
     const { cart, addItem, updateQuantity } = useCart();
@@ -13,7 +14,7 @@ const MenuItemCard = ({ item, outletId, outletName, index = 0 }) => {
     const getImageUrl = (img) => {
         if (!img) return null;
         if (img.startsWith('http')) return img;
-        return `http://localhost:5000/${img.replace(/\\/g, '/')}`;
+        return `${baseURL}/${img.replace(/\\/g, '/')}`;
     };
 
     // Handles adding item to cart 

@@ -5,6 +5,7 @@ import { useParams, Link } from 'react-router-dom';
 import { getOutletById } from '../api/outletApi';
 import { ArrowLeft, MapPin, Clock } from 'lucide-react';
 import Navbar from '../components/Navbar';
+import { baseURL } from '../utils/API_paths';
 import MenuItemCard from '../components/MenuItemCard';
 import ViewCheckoutButton from '../components/ViewCheckoutButton';
 import './StudentDashboard.css';
@@ -62,7 +63,7 @@ const OutletDetail = () => {
         if (!outlet?.images?.length) return null;
         const img = outlet.images[0];
         if (img.startsWith('http')) return img;
-        return `http://localhost:5000/${img.replace(/\\/g, '/')}`;
+        return `${baseURL}/${img.replace(/\\/g, '/')}`;
     };
 
     const scrollToCategory = (cat) => {

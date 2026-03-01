@@ -1,13 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Clock } from 'lucide-react';
+import { baseURL } from '../utils/API_paths';
 
 const OutletCard = ({ outlet, index = 0 }) => {
     const getImageUrl = (images) => {
         if (!images || images.length === 0) return null;
         const img = images[0];
         if (img.startsWith('http')) return img;
-        return `http://localhost:5000/${img.replace(/\\/g, '/')}`;
+        return `${baseURL}/${img.replace(/\\/g, '/')}`;
     };
 
     const imageUrl = getImageUrl(outlet.images);
