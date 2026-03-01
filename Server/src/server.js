@@ -15,6 +15,7 @@ import packageRoutes from "./Routes/packageRoutes.js";
 dotenv.config();
 
 const app = express();
+app.set("trust proxy", 1); // Allow secure cookies behind proxy in prod
 Connection();
 
 app.use(cors(
