@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 // For sending OTP
 import crypto from "crypto";
 import sendEmail from "../utils/sendEmail.js";
+import { transporter } from "../Config/Transporter.js";
 
 
 
@@ -207,3 +208,20 @@ export const resetPassword = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 }
+
+export const testEmail = async (req, res) => {
+    try {
+        const mailOptions = {
+            from: `"Cravora Diagnostics" <${process.env.EMAIL_USER}>`,
+            to: process.env.EMAIL_USER,
+            subject: "Render Deployment Test",
+            html: `<p>If you receive this, Nodemailer is working on Render.</p>
+                   <p>User Configured: ${process.env.EMAIL_USER}</p>
+                   <p>Pass Length: ${process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.length : 0}</p>`
+        };
+        const info = await transporter.sendMail(mailOptions);
+        return res.status(200).json({ success: true, message: "Email sent successfully", info: info.messageId });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Email failed", error: error.message, stack: error.stack });
+    }
+};
