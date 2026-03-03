@@ -1,5 +1,9 @@
 import "dotenv/config";
 import nodemailer from "nodemailer";
+import dns from "dns";
+
+// Force Node to prefer IPv4 for DNS resolution (crucial for Render deployments that don't route IPv6)
+dns.setDefaultResultOrder("ipv4first");
 
 // Mail delivery service config
 export const transporter = nodemailer.createTransport({
