@@ -28,6 +28,8 @@
     padding: 40px;
     position: relative;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .add-outlet-close-btn {
