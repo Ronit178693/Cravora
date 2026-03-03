@@ -114,7 +114,7 @@ export const updateOutlet = async (req, res) => {
         if (description !== undefined) outlet.description = description;
         if (location !== undefined) outlet.location = location;
         if (contactNumber !== undefined) outlet.contactNumber = contactNumber;
-        if (req.file) outlet.images.push(req.file.path);
+        if (req.file) outlet.images = [req.file.path];
         if (WorkingHours !== undefined) outlet.WorkingHours = WorkingHours;
         if (isOpen !== undefined) outlet.isOpen = isOpen;
 
