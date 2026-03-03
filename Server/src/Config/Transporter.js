@@ -5,9 +5,10 @@ import nodemailer from "nodemailer";
 export const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
-    secure: true, // true for 465, false for other ports
+    secure: true,
+    family: 4, // Force IPv4 — Render cannot route IPv6 to Gmail SMTP
     auth: {
-        user: process.env.EMAIL_USER,     // Your email (e.g. yourapp@gmail.com)
-        pass: process.env.EMAIL_PASSWORD  // App Password (NOT your Gmail password)
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD
     }
 });
