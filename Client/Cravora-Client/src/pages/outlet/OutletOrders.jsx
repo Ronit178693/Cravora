@@ -78,7 +78,7 @@ const OutletOrders = () => {
     const counts = {
         pending: orders.filter(o => o.status === 'Pending').length,
         accepted: orders.filter(o => ['Accepted', 'Preparing'].includes(o.status)).length,
-        active: orders.filter(o => o.status === 'OutForDelivery').length,
+       
         completed: orders.filter(o => ['Delivered', 'Cancelled'].includes(o.status)).length,
     };
 
@@ -149,7 +149,7 @@ const OutletOrders = () => {
                         {[
                             { key: 'pending', label: 'Pending', icon: <Clock size={16} /> },
                             { key: 'accepted', label: 'Accepted', icon: <ChefHat size={16} /> },
-                            { key: 'active', label: 'Out for Delivery', icon: <MapPin size={16} /> },
+                           
                             { key: 'completed', label: 'Completed', icon: <Package size={16} /> },
                         ].map(tab => (
                             <button

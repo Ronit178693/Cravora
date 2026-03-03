@@ -190,14 +190,6 @@ const OutletList = ({ outlets, onDelete, onUpdate }) => {
                                 onSave={(val) => onUpdate(outlet._id, { description: val })}
                             />
                         </div>
-
-                        <button
-                            className="btn-secondary"
-                            style={{ marginTop: '10px', alignSelf: 'flex-start', fontSize: '0.9rem' }}
-                            onClick={() => navigate(`/outlet/${outlet._id}`)}
-                        >
-                            Manage Menu & Orders
-                        </button>
                     </div>
                 </div>
             ))}
