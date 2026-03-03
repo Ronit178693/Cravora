@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 // For sending OTP
 import crypto from "crypto";
 import sendEmail from "../utils/sendEmail.js";
-import { transporter } from "../Config/Transporter.js";
 
 
 export const Register = async (req, res) => {
@@ -207,42 +206,3 @@ export const resetPassword = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 }
-
-// Diagnostic endpoint to test email configuration on deployed server
-export const testEmail = async (req, res) => {
-    const diagnostics = {
-        EMAIL_USER_SET: !!process.env.EMAIL_USER,
-        EMAIL_USER_VALUE: process.env.EMAIL_USER ? process.env.EMAIL_USER.substring(0, 4) + '***' : 'NOT SET',
-        EMAIL_PASSWORD_SET: !!process.env.EMAIL_PASSWORD,
-        EMAIL_PASSWORD_LENGTH: process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.length : 0,
-        NODE_ENV: process.env.NODE_ENV || 'not set',
-    };
-
-    try {
-        // Verify SMTP connection first
-        await transporter.verify();
-        diagnostics.SMTP_CONNECTION = 'SUCCESS';
-    } catch (verifyError) {
-        diagnostics.SMTP_CONNECTION = 'FAILED';
-        diagnostics.SMTP_ERROR = verifyError.message;
-        return res.status(500).json({ success: false, diagnostics });
-    }
-
-    try {
-        // Try sending an actual test email
-        const info = await transporter.sendMail({
-            from: `"Cravora Test" <${process.env.EMAIL_USER}>`,
-            to: process.env.EMAIL_USER, // send to self
-            subject: 'Cravora Email Test - ' + new Date().toISOString(),
-            html: '<h1>Email is working!</h1><p>This is a test from Render deployment.</p>'
-        });
-        diagnostics.EMAIL_SENT = true;
-        diagnostics.MESSAGE_ID = info.messageId;
-        return res.status(200).json({ success: true, diagnostics });
-    } catch (sendError) {
-        diagnostics.EMAIL_SENT = false;
-        diagnostics.SEND_ERROR = sendError.message;
-        diagnostics.SEND_ERROR_CODE = sendError.code;
-        return res.status(500).json({ success: false, diagnostics });
-    }
-};
