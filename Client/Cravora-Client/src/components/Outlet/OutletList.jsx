@@ -9,7 +9,7 @@ const OutletList = ({ outlets, onDelete, onUpdate }) => {
     // Helper to format path for display
     const getImageUrl = (imagePath) => {
         if (!imagePath) return "https://via.placeholder.com/400x300?text=No+Image";
-        if (imagePath.startsWith('http')) return imagePath;
+        return imagePath;
     };
 
     const handleImageUpload = (e, outletId) => {
@@ -116,21 +116,44 @@ const OutletList = ({ outlets, onDelete, onUpdate }) => {
                                     onSave={(val) => onUpdate(outlet._id, { name: val })}
                                 />
                             </div>
-                            <button
-                                className="btn-icon-danger"
-                                style={{
-                                    padding: '8px',
-                                    background: 'rgba(239, 68, 68, 0.1)',
-                                    color: '#ef4444',
-                                    border: '1px solid rgba(239, 68, 68, 0.2)',
-                                    borderRadius: '8px',
-                                    cursor: 'pointer'
-                                }}
-                                onClick={() => onDelete(outlet._id)}
-                                title="Delete Outlet"
-                            >
-                                <Trash2 size={18} />
-                            </button>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                                <label className="toggle-switch" title="Toggle Outlet Open/Closed Status" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: '500', color: outlet.isOpen !== false ? '#22c55e' : '#ef4444' }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={outlet.isOpen !== false}
+                                        onChange={(e) => onUpdate(outlet._id, { isOpen: e.target.checked })}
+                                        style={{ display: 'none' }}
+                                    />
+                                    {/* Simplified toggle visual since the class might rely on specific wrapper structures not present here natively without checking CSS */}
+                                    <div style={{
+                                        width: '40px', height: '22px', borderRadius: '20px',
+                                        background: outlet.isOpen !== false ? '#22c55e' : '#ef4444',
+                                        position: 'relative', transition: 'background 0.3s'
+                                    }}>
+                                        <div style={{
+                                            width: '18px', height: '18px', borderRadius: '50%', background: 'white',
+                                            position: 'absolute', top: '2px', left: outlet.isOpen !== false ? '20px' : '2px',
+                                            transition: 'left 0.3s'
+                                        }}></div>
+                                    </div>
+                                    {outlet.isOpen !== false ? 'Open' : 'Closed'}
+                                </label>
+                                <button
+                                    className="btn-icon-danger"
+                                    style={{
+                                        padding: '8px',
+                                        background: 'rgba(239, 68, 68, 0.1)',
+                                        color: '#ef4444',
+                                        border: '1px solid rgba(239, 68, 68, 0.2)',
+                                        borderRadius: '8px',
+                                        cursor: 'pointer'
+                                    }}
+                                    onClick={() => onDelete(outlet._id)}
+                                    title="Delete Outlet"
+                                >
+                                    <Trash2 size={18} />
+                                </button>
+                            </div>
                         </div>
 
                         {/* Details Grid */}

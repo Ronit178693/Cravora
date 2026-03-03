@@ -13,7 +13,8 @@ const Dashboard = () => {
         const fetchOutlets = async () => {
             try {
                 const res = await getAllOutlets();
-                setOutlets(res.data.outlets || []);
+                const activeOutlets = (res.data.outlets || []).filter(o => o.isOpen !== false);
+                setOutlets(activeOutlets);
             } catch (err) {
                 console.error('Error fetching outlets:', err);
             } finally {
