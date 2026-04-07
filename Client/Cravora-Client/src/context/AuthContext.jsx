@@ -7,7 +7,8 @@ export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);   // true until session check completes
+    const [loading, setLoading] = useState(false);   // Changed to false by default
+    const [isCheckingSession, setIsCheckingSession] = useState(true); // New state for initial check
     const [error, setError] = useState(null);
 
     // On mount: try to restore session from the HTTP-only cookie
@@ -20,7 +21,7 @@ export function AuthProvider({ children }) {
             } catch {
                 // No valid session — stay logged out
             } finally {
-                if (!cancelled) setLoading(false); 
+                if (!cancelled) setIsCheckingSession(false); 
             }
         })();
         return () => { cancelled = true; };
@@ -73,7 +74,7 @@ export function AuthProvider({ children }) {
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, error, register, login, logout }}>
+        <AuthContext.Provider value={{ user, loading, isCheckingSession, error, register, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

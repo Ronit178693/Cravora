@@ -18,7 +18,7 @@ import FormInput from "../FormInput/FormInput";
 
 export default function RegisterForm() {
     const navigate = useNavigate();
-    const { register, loading } = useAuth();
+    const { register, loading, isCheckingSession } = useAuth();
 
     const [form, setForm] = useState({
         name: "",
@@ -65,9 +65,6 @@ export default function RegisterForm() {
             toast.success("Account created successfully!");
             if (res.user.role === "Outlet") {
                 setTimeout(() => navigate("/outlet-dashboard"), 1200);
-            }
-            else if (res.user.role === "Runner") {
-                setTimeout(() => navigate("/runner-dashboard"), 1200);
             }
             else if (res.user.role === "Student") {
                 setTimeout(() => navigate("/student-dashboard"), 1200);
@@ -218,7 +215,7 @@ export default function RegisterForm() {
                 <button
                     type="submit"
                     className="register-btn"
-                    disabled={loading}
+                    disabled={loading || isCheckingSession}
                 >
                     {loading ? (
                         <>

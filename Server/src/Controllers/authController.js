@@ -32,15 +32,15 @@ export const Register = async (req, res) => {
             // Evey time any request is made after logging in or signing in the cookie is automatically sent from the client to the server
             res.cookie("token", token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === "production", // require HTTPS in production
-                sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", // allow cross-site cookies in production
+                secure: process.env.NODE_ENV === "production" && req.protocol === "https", 
+                sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", 
                 maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
             })
             // Clearing the password before sending a response to the client
             newUser.password = undefined;
 
             // Send response FIRST so the client UI doesn't hang
-            res.status(201).json({ success: true, message: "User created successfully", user: newUser });
+            return res.status(201).json({ success: true, message: "User created successfully", user: newUser });
 
             // Send mail asynchronously (fire and forget) without blocking the response
             sendEmail(
@@ -90,8 +90,8 @@ export const Login = async (req, res) => {
         // Evey time any request is made after logging in or signing in the cookie is automatically sent from the client to the server
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production", // require HTTPS in production
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", // allow cross-site cookies in production
+            secure: process.env.NODE_ENV === "production" && req.protocol === "https",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
         })
 

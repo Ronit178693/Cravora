@@ -7,7 +7,7 @@ import FormInput from "../FormInput/FormInput";
 
 export default function LoginForm() {
     const navigate = useNavigate();
-    const { login, loading } = useAuth();
+    const { login, loading, isCheckingSession } = useAuth();
 
     const [form, setForm] = useState({
         email: "",
@@ -40,7 +40,7 @@ export default function LoginForm() {
         }
             try {
             const res = await login(form);
-            toast.success("Account created successfully!");
+            toast.success("Logged in successfully!");
             if(res.user.role === "Outlet"){
                 setTimeout(() => navigate("/outlet-dashboard"), 1200);
             }
@@ -133,7 +133,7 @@ export default function LoginForm() {
                 <button
                     type="submit"
                     className="login-btn"
-                    disabled={loading}
+                    disabled={loading || isCheckingSession}
                 >
                     {loading ? (
                         <>
