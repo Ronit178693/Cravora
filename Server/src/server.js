@@ -1,5 +1,8 @@
+// dotenv/config MUST be the first import — ES modules hoist all imports
+// and execute them before any runtime code like dotenv.config()
+import "dotenv/config";
+
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import Connection from "./Config/Connection_DB.js";
@@ -12,17 +15,15 @@ import orderRoutes from "./Routes/orderRoutes.js";
 import packageRoutes from "./Routes/packageRoutes.js";
 
 
-dotenv.config();
-
 const app = express();
 app.set("trust proxy", 1); // Allow secure cookies behind proxy in prod
-Connection();
 
+// CORS configuration
 app.use(cors(
     {
         origin: function (origin, callback) {
             if (!origin) return callback(null, true);
-            const allowedOrigins = ["http://localhost:5173", "https://cravora-chi.vercel.app"];
+            const allowedOrigins = ["http://localhost:5173", "http://localhost:5174", "https://cravora-chi.vercel.app"];
             if (process.env.CLIENT_URL) allowedOrigins.push(process.env.CLIENT_URL);
 
             if (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
@@ -36,6 +37,11 @@ app.use(cors(
 ))
 app.use(express.json());
 app.use(cookieParser());
+
+// Health check — useful for debugging if server is alive
+app.get("/health", (req, res) => {
+    res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
@@ -56,6 +62,11 @@ app.use((err, req, res, next) => {
     res.status(500).json({ success: false, message: "Internal server error" });
 });
 
-app.listen(process.env.PORT || 5000, () => {
-    console.log(`Server is running on port ${process.env.PORT}`);
+// Start the server FIRST, then connect to DB
+// This ensures Render sees the server is alive even if DB is slow
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+    // Connect to MongoDB after the server is listening
+    Connection();
 });
