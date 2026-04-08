@@ -39,9 +39,6 @@ export const Register = async (req, res) => {
             // Clearing the password before sending a response to the client
             newUser.password = undefined;
 
-            // Send response FIRST so the client UI doesn't hang
-            return res.status(201).json({ success: true, message: "User created successfully", user: newUser });
-
             // Send mail asynchronously (fire and forget) without blocking the response
             sendEmail(
                 email,
@@ -54,7 +51,8 @@ export const Register = async (req, res) => {
                 console.error("Failed to send welcome email:", error);
             });
 
-            return;
+            // Send response to the client
+            return res.status(201).json({ success: true, message: "User created successfully", user: newUser });
         }
     }
     catch (error) {
@@ -107,8 +105,8 @@ export const Logout = async (req, res) => {
     try {
         res.clearCookie("token", {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production", // require HTTPS in production
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", // allow cross-site cookies in production
+            secure: process.env.NODE_ENV === "production" && req.protocol === "https",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         })
         return res.status(200).json({ success: true, message: "User logged out successfully" });
     }

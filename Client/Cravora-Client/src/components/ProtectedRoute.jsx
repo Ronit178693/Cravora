@@ -9,9 +9,10 @@ import useAuth from '../hooks/useAuth';
  */
 // Gets the role from the user and checks if it is authorized to access the page
 const ProtectedRoute = ({ children, roles }) => {
-    const { user, loading } = useAuth();
-
-    if (loading) {
+    const { user, isCheckingSession } = useAuth();
+    
+    // If still verifying the initial session, show a loading screen
+    if (isCheckingSession) {
         return (
             <div style={{
                 display: 'flex', justifyContent: 'center', alignItems: 'center',
