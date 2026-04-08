@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=40&duration=3000&pause=1000&color=F97316&center=true&vCenter=true&multiline=true&repeat=true&width=600&height=100&lines=🍕+CRAVORA;Campus+Food+%26+Delivery+Platform" alt="Cravora Header" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=700&size=40&duration=3000&pause=1000&color=F97316&center=true&vCenter=true&multiline=true&width=600&height=100&lines=CRAVORA+PROJECT;Campus+Food+and+Delivery" alt="Cravora Header" />
 </p>
 
 <p align="center">
@@ -704,7 +704,7 @@ Contributions are welcome! Here's how you can help:
 ---
 
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=24&duration=3000&pause=1000&color=F97316&center=true&vCenter=true&repeat=true&width=435&lines=Built+with+☕+and+🍕;by+Ronit+Agrawal" alt="Footer" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=24&duration=3000&pause=1000&color=F97316&center=true&vCenter=true&width=435&lines=Built+with+Passion;by+Ronit+Agrawal" alt="Footer" />
 </p>
 
 <p align="center">
