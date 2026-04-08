@@ -44,10 +44,8 @@ export default function LoginForm() {
             if(res.user.role === "Outlet"){
                 setTimeout(() => navigate("/outlet-dashboard"), 1200);
             }
-            else if(res.user.role === "Runner"){
-                setTimeout(() => navigate("/runner-dashboard"), 1200);
-            }
-            else if(res.user.role === "Student"){
+            else if(res.user.role === "Student" || res.user.role === "Runner"){
+                // All students (including those acting as runners) start at the student dashboard
                 setTimeout(() => navigate("/student-dashboard"), 1200);
             }
             else{

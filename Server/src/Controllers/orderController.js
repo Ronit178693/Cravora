@@ -32,6 +32,17 @@ export const placeOrder = async (req, res) => {
             deliveryFee: deliveryFee || 0,
         });
 
+        // Update User's order history
+        await User.findByIdAndUpdate(userID, {
+            $push: { orderHistory: { order: order._id } }
+        });
+
+        // Update Outlet's order records
+        await Outlet.findByIdAndUpdate(outletId, {
+            $inc: { orderCount: 1 },
+            $push: { orders: { order: order._id } }
+        });
+
         return res.status(201).json({ success: true, message: "Order placed successfully", order });
     }
     catch (error) {
@@ -180,6 +191,14 @@ export const updateOrderStatus = async (req, res) => {
         order.status = status;
         if (status === "Delivered") {
             order.deliveredAt = new Date();
+            
+            // If it was delivered by a runner, update their stats
+            if (order.runner) {
+                await User.findByIdAndUpdate(order.runner, {
+                    $inc: { "deliveryStats.deliveriesCompleted": 1 },
+                    $set: { "deliveryStats.lastDeliveryAt": new Date() }
+                });
+            }
         }
         await order.save();
 

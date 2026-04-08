@@ -87,7 +87,7 @@ export const getMyOutlet = async (req, res) => {
     const userID = req.user.id;
     try {
         const outlets = await Outlet.find({ owner: userID });
-        if (!outlets) {
+        if (!outlets || outlets.length === 0) {
             return res.status(404).json({ success: false, message: "Outlets not found" });
         }
         return res.status(200).json({ success: true, outlets });

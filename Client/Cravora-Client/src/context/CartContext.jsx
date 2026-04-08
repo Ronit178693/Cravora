@@ -83,11 +83,22 @@ const cartReducer = (state, action) => {
 };
 
 export function CartProvider({ children }) {
-    const [cart, dispatch] = useReducer(cartReducer, {
-        items: [],
-        outletId: null,
-        outletName: null,
-    });
+    // Initial state loading from localStorage
+    const initialState = (() => {
+        const saved = localStorage.getItem("cravora_cart");
+        return saved ? JSON.parse(saved) : {
+            items: [],
+            outletId: null,
+            outletName: null,
+        };
+    })();
+
+    const [cart, dispatch] = useReducer(cartReducer, initialState);
+
+    // Save to localStorage whenever cart changes
+    useEffect(() => {
+        localStorage.setItem("cravora_cart", JSON.stringify(cart));
+    }, [cart]);
 
     const addItem = (item, outletId, outletName) =>
         dispatch({ type: "ADD_ITEM", payload: { item, outletId, outletName } });

@@ -6,6 +6,7 @@ import { baseURL, API_PATHS } from "../utils/API_paths";
 const API = axios.create({
     baseURL: baseURL,
     withCredentials: true,
+    timeout: 15000,
 });
 
 export const registerUser = (data) => API.post(API_PATHS.AUTH.REGISTER, data);
