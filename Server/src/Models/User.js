@@ -31,14 +31,20 @@ const UserSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['Student', 'Outlet', 'DeliveryPartner', 'Runner'],
+        enum: ['Student', 'Outlet'],
         default: 'Student'
+    },
+    // Runner Mode — any Student can toggle this to start accepting deliveries
+    // When true, the student appears as "available" and can access the Runner Dashboard
+    isRunnerActive: {
+        type: Boolean,
+        default: false
     },
     createdAt: {
         type: Date,
         default: Date.now
     },
-    // Enhanced tracking fields
+    // Enhanced tracking fields — tracks delivery stats for students acting as runners
     deliveryStats: {
         deliveriesCompleted: { type: Number, default: 0 },
         // ratings: [{

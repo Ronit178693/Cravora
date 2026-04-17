@@ -1,5 +1,5 @@
 // useReducer is used to manage complex state logics, alternative for useState hook
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useReducer, useEffect } from "react";
 
 // Creating CartContext
 const CartContext = createContext(null);
