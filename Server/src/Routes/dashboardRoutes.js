@@ -1,14 +1,15 @@
 import express from "express";
-import { getDashboard, getProfile, getRunnerDashboard, getRunnerStats } from "../Controllers/dashboardController.js";
+import { getProfile } from "../Controllers/dashboardController.js";
 import { protect } from "../Middlewares/authMiddleware.js";
-import { authorize } from "../Middlewares/roleMiddleware.js";
 
 const router = express.Router();
 
-// All dashboard routes require authentication
-router.get("/", protect, getDashboard);
+/**
+ * Dashboard & Profile Routes Router
+ * Requires user session authentication to access profiles.
+ */
+
+// Protected Route: Fetch user profile, order history, and stats
 router.get("/profile", protect, getProfile);
-router.get("/runner", protect, authorize("Student"), getRunnerDashboard);
-router.get("/runner/stats", protect, authorize("Student"), getRunnerStats);
 
 export default router;
