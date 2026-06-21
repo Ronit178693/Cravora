@@ -1,19 +1,29 @@
-// useReducer is used to manage complex state logics, alternative for useState hook
+/**
+ * Cart Context & Provider
+ * Manages the shopping cart state using a reducer pattern and syncs data to localStorage.
+ * Restricts orders to a single food outlet at a time (clears cart if ordering from a new outlet).
+ */
 import { createContext, useContext, useReducer, useEffect } from "react";
 
-// Creating CartContext
+// Create context object to store cart data and dispatch handlers
 const CartContext = createContext(null);
 
-// cartReducer is a function that takes state and action and returns new state
+/**
+ * Cart Reducer Function
+ * Performs state transitions based on cart action payloads.
+ * @param {Object} state - Current cart state { items: [], outletId: String, outletName: String }
+ * @param {Object} action - Action descriptor { type: String, payload: Any }
+ * @returns {Object} Updated cart state
+ */
 const cartReducer = (state, action) => {
-    // Getting the type of action performed 
     switch (action.type) {
+        // Adds an item to the cart or increments its count
         case "ADD_ITEM": {
             const { item, outletId, outletName } = action.payload;
 
-            // Checks if there is something in the cart then checks if the outlet id is same for addons 
+            // Restrict order: If item is from a different outlet than the existing one in the cart,
+            // overwrite the cart state with the new outlet's first item.
             if (state.outletId && state.outletId !== outletId) {
-                // If condition passes then return the outlet details and add one item
                 return {
                     outletId,
                     outletName,
@@ -21,7 +31,7 @@ const cartReducer = (state, action) => {
                 };
             }
 
-            // if item already exists in the cart then increment the quantity
+            // If item already exists in the cart, increment its quantity
             const existing = state.items.find(i => i.menuItemId === item.menuItemId);
             if (existing) {
                 return {
@@ -36,6 +46,7 @@ const cartReducer = (state, action) => {
                 };
             }
 
+            // Otherwise, append the new item with a default quantity of 1
             return {
                 ...state,
                 outletId,
@@ -44,18 +55,19 @@ const cartReducer = (state, action) => {
             };
         }
 
+        // Removes a specific item from the cart
         case "REMOVE_ITEM":
             return {
                 ...state,
                 items: state.items.filter(i => i.menuItemId !== action.payload),
-                // If the cart becomes empty after removing the item then clear the outlet details
+                // Clean up outlet metadata if removing this item makes the cart empty
                 ...(state.items.length === 1 ? { outletId: null, outletName: null } : {}),
             };
 
+        // Adjusts the quantity of a specific cart item
         case "UPDATE_QUANTITY": {
-            // Getting the following info from the object payload
             const { menuItemId, quantity } = action.payload;
-            // If the quantity is less than or equal to 0 then remove the item from the cart
+            // If new quantity falls below 1, remove the item entirely
             if (quantity <= 0) {
                 const newItems = state.items.filter(i => i.menuItemId !== menuItemId);
                 
@@ -65,6 +77,7 @@ const cartReducer = (state, action) => {
                     ...(newItems.length === 0 ? { outletId: null, outletName: null } : {}),
                 };
             }
+            // Map items and modify matching item's quantity
             return {
                 ...state,
                 items: state.items.map(i =>
@@ -73,8 +86,8 @@ const cartReducer = (state, action) => {
             };
         }
 
+        // Empties the cart structure completely
         case "CLEAR_CART":
-            // Clears the cart data
             return { items: [], outletId: null, outletName: null };
 
         default:
@@ -82,8 +95,12 @@ const cartReducer = (state, action) => {
     }
 };
 
+/**
+ * CartProvider component wraps the app layout to provide state contexts.
+ * Syncs the state tree to localStorage for persistence across reloads.
+ */
 export function CartProvider({ children }) {
-    // Initial state loading from localStorage
+    // Initializer function loads saved cart JSON configuration from localStorage
     const initialState = (() => {
         const saved = localStorage.getItem("cravora_cart");
         return saved ? JSON.parse(saved) : {
@@ -93,25 +110,44 @@ export function CartProvider({ children }) {
         };
     })();
 
+    // Initialize reducer state machine
     const [cart, dispatch] = useReducer(cartReducer, initialState);
 
-    // Save to localStorage whenever cart changes
+    // Save cart state payload to localStorage on updates
     useEffect(() => {
         localStorage.setItem("cravora_cart", JSON.stringify(cart));
     }, [cart]);
 
+    /**
+     * Adds an item to the shopping cart.
+     * @param {Object} item - Menu item detail snapshot
+     * @param {String} outletId - Reference outlet ID
+     * @param {String} outletName - Readable outlet name
+     */
     const addItem = (item, outletId, outletName) =>
         dispatch({ type: "ADD_ITEM", payload: { item, outletId, outletName } });
 
+    /**
+     * Removes an item from the cart.
+     * @param {String} menuItemId - Target item ID
+     */
     const removeItem = (menuItemId) =>
         dispatch({ type: "REMOVE_ITEM", payload: menuItemId });
 
+    /**
+     * Updates target quantity of a menu item in the cart.
+     * @param {String} menuItemId - Target item ID
+     * @param {Number} quantity - Target quantity count
+     */
     const updateQuantity = (menuItemId, quantity) =>
         dispatch({ type: "UPDATE_QUANTITY", payload: { menuItemId, quantity } });
 
+    /**
+     * Empties all cart contents.
+     */
     const clearCart = () => dispatch({ type: "CLEAR_CART" });
 
-    // Here sum is the accumilator and i is the menu item 
+    // Derive pricing and item counters dynamically on each state change
     const totalItems = cart.items.reduce((sum, i) => sum + i.quantity, 0);
     const totalPrice = cart.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
@@ -130,6 +166,10 @@ export function CartProvider({ children }) {
     );
 }
 
+/**
+ * Custom hook to safely consume the Cart Context.
+ * @returns {Object} Cart state variables and event dispatchers
+ */
 export const useCart = () => {
     const ctx = useContext(CartContext);
     if (!ctx) throw new Error("useCart must be used within CartProvider");

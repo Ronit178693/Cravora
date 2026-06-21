@@ -14,10 +14,17 @@ import {
 } from "lucide-react";
 import FormInput from "../FormInput/FormInput";
 
+/**
+ * RegisterForm Component
+ * Manages the registration form layout, validation constraints, role selection
+ * (Student vs Outlet), and authentication redirection upon successful sign-up.
+ */
 export default function RegisterForm() {
     const navigate = useNavigate();
+    // Retrieve authentication dispatcher and loader state from global Auth hook
     const { register, loading, isCheckingSession } = useAuth();
 
+    // Signup form values state mapping
     const [form, setForm] = useState({
         name: "",
         email: "",
@@ -26,9 +33,18 @@ export default function RegisterForm() {
         role: "Student",
     });
 
+    // Password visibility toggle state
     const [showPassword, setShowPassword] = useState(false);
+    
+    // Store validation error messages mapped by field name
     const [errors, setErrors] = useState({});
 
+    /**
+     * handleChange
+     * Synchronizes form values to state on user input, and clears errors
+     * on the active element.
+     * @param {React.ChangeEvent<HTMLInputElement>} e - Input change event
+     */
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
         if (errors[e.target.name]) {
@@ -36,6 +52,11 @@ export default function RegisterForm() {
         }
     };
 
+    /**
+     * validate
+     * Local client validation check for all registration fields (name, email format, phone digits, password length).
+     * @returns {Object} Key-value pairs of found validation errors
+     */
     const validate = () => {
         const errs = {};
         if (!form.name.trim()) errs.name = "Name is required";
@@ -51,6 +72,13 @@ export default function RegisterForm() {
         return errs;
     };
 
+    /**
+     * handleSubmit
+     * Triggered on registration form submit. Validates inputs first, then calls the register endpoint.
+     * Routes new users to the appropriate starting pages based on their selected role.
+     * @param {React.FormEvent} e - Submit event
+     * @returns {Promise<void>}
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
         const errs = validate();

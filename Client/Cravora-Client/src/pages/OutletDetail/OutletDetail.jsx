@@ -1,6 +1,9 @@
-// useMemo used to store a perticular value so it does not recomputes on every render
+/**
+ * Outlet Detail Page Component
+ * Displays a specific food outlet's profile details and groups its menu items by category.
+ * Provides sticky category navigation buttons and scrolls to respective sections smoothly.
+ */
 import React, { useState, useEffect, useMemo } from 'react';
-// useParams for accessing dynamic valuse from the URL like /outlet/:id
 import { useParams, Link } from 'react-router-dom';
 import { getOutletById } from '../../api/outletApi';
 import { ArrowLeft, MapPin, Clock } from 'lucide-react';
@@ -11,12 +14,19 @@ import ViewCheckoutButton from '../../components/ViewCheckoutButton/ViewCheckout
 import '../Dashboard/StudentDashboard.css';
 
 const OutletDetail = () => {
-
+    // Grab the dynamic outlet ID parameter from the URL path (/outlet/:id)
     const { id } = useParams();
+    
+    // Store detailed database payload for the current food outlet
     const [outlet, setOutlet] = useState(null);
+    
+    // UI loading spinner indicator state
     const [loading, setLoading] = useState(true);
+    
+    // Tracks the currently focused/scrolled category tab
     const [activeCategory, setActiveCategory] = useState(null);
-    // Fetching outlet every time the outlet changes
+
+    // Fetch specific outlet details on mount or ID change
     useEffect(() => {
         const fetchOutlet = async () => {
             try {
@@ -31,34 +41,35 @@ const OutletDetail = () => {
         fetchOutlet();
     }, [id]);
 
-    // Group menu items by category
+    /**
+     * Groups menu items by their category key dynamically.
+     * useMemo optimization prevents recalculating this grouping during simple state changes (e.g. active tab clicks).
+     */
     const categorizedMenu = useMemo(() => {
-        // If the outlet has no menu items, return an empty object
         if (!outlet?.menu?.length) return {};
         const groups = {};
-        // Looping throught the item category and grouping them
         outlet.menu.forEach(item => {
             const cat = item.category || 'Other';
-            // If the category does not exist, create it
             if (!groups[cat]) groups[cat] = [];
-            // Pushing the item to the category
             groups[cat].push(item);
         });
         return groups;
-        // The dependency array ensures this runs only when the outlet changes
     }, [outlet]);
 
-    // Get the list of categories
+    // Gather array list of distinct menu categories
     const categories = Object.keys(categorizedMenu);
 
-    // Set default active category once loaded
+    // Set first available category as default active tab once loaded
     useEffect(() => {
-        // If the categories array has items and the active category is not set, set the first category as active
         if (categories.length > 0 && !activeCategory) {
             setActiveCategory(categories[0]);
         }
-    }, [categories]);
+    }, [categories, activeCategory]);
 
+    /**
+     * Resolves the outlet's header background image URL.
+     * @returns {String|null} Absolute URL to image asset or null if not set
+     */
     const getHeroImage = () => {
         if (!outlet?.images?.length) return null;
         const img = outlet.images[0];
@@ -66,12 +77,19 @@ const OutletDetail = () => {
         return `${baseURL}/${img.replace(/\\/g, '/')}`;
     };
 
+    /**
+     * Smoothly scrolls the window context to target category container.
+     * @param {String} cat - Category name
+     */
     const scrollToCategory = (cat) => {
         setActiveCategory(cat);
         const el = document.getElementById(`category-${cat.replace(/\s+/g, '-')}`);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     };
 
+    // Show loading spinner if network request is pending
     if (loading) {
         return (
             <div className="sd-page">
@@ -81,6 +99,7 @@ const OutletDetail = () => {
         );
     }
 
+    // Handle case where API returns empty or database record is missing
     if (!outlet) {
         return (
             <div className="sd-page">
@@ -103,7 +122,7 @@ const OutletDetail = () => {
                     <ArrowLeft size={16} /> Back to outlets
                 </Link>
 
-                {/* Hero */}
+                {/* Cover Banner Hero block */}
                 <div
                     className="sd-outlet-hero"
                     style={{
@@ -130,7 +149,7 @@ const OutletDetail = () => {
                     </div>
                 </div>
 
-                {/* Menu Section */}
+                {/* Menu items list */}
                 {!outlet.menu || outlet.menu.length === 0 ? (
                     <div className="sd-empty">
                         <h3>No menu items yet</h3>
@@ -138,7 +157,7 @@ const OutletDetail = () => {
                     </div>
                 ) : (
                     <>
-                        {/* Category Tabs */}
+                        {/* Interactive Category sticky scroll tabs */}
                         <div className="sd-category-tabs">
                             {categories.map(cat => (
                                 <button
@@ -151,7 +170,7 @@ const OutletDetail = () => {
                             ))}
                         </div>
 
-                        {/* Category Sections */}
+                        {/* Staggered lists of menu items categorized */}
                         {categories.map(cat => (
                             <div
                                 key={cat}
@@ -175,6 +194,7 @@ const OutletDetail = () => {
                     </>
                 )}
             </div>
+            {/* Sticky bottom checkout FAB trigger */}
             <ViewCheckoutButton />
         </div>
     );

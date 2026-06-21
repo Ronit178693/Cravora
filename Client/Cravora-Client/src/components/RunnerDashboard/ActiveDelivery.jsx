@@ -1,6 +1,19 @@
 import React from 'react';
 import { Truck, ShoppingBag, Package, User, Phone, CheckCircle } from 'lucide-react';
 
+/**
+ * ActiveDelivery Component
+ * Displays detailed information about a runner's currently assigned, active job.
+ * Handles display for both food order deliveries and package delivery requests, 
+ * renders pickup/drop-off route coordinates, customer contacts, order item manifests,
+ * and status transition buttons (e.g. 'Mark as Prepared', 'Mark as Delivered').
+ *
+ * @param {Object} activeDelivery - Active task details containing type ('order'|'package') and data object
+ * @param {Function} getStatusColor - Helper mapping delivery status key to style color hex
+ * @param {Object} nextAction - Config holding key and label of next available action (e.g., { status: 'Delivered', label: 'Complete Delivery' })
+ * @param {Function} handleStatusUpdate - Callback trigger dispatched to advance delivery state in the backend
+ * @param {Boolean} updatingStatus - Loading state block active during state patch requests
+ */
 const ActiveDelivery = ({ activeDelivery, getStatusColor, nextAction, handleStatusUpdate, updatingStatus }) => {
     if (!activeDelivery) return null;
 

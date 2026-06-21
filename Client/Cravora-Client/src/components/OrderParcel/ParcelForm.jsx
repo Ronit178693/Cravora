@@ -1,6 +1,18 @@
 import React from 'react';
 import { Send } from 'lucide-react';
 
+/**
+ * ParcelForm Component
+ * Renders the creation form for a new peer-to-peer package delivery request.
+ * Captures package category (Courier, Blinket, Food), locations, description,
+ * quantity, incentive delivery tip fee, and special instructions.
+ *
+ * @param {Object} form - State object containing active input field values
+ * @param {Function} setForm - State dispatcher hook to update the complete form state
+ * @param {Function} handleChange - Standard text input change handler callback
+ * @param {Function} handleSubmit - Form submit interceptor callback trigger
+ * @param {Boolean} submitting - Boolean loader blocking button clicks during submission
+ */
 const ParcelForm = ({ form, setForm, handleChange, handleSubmit, submitting }) => {
     return (
         <div className="op-form-section">

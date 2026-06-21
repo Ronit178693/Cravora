@@ -1,3 +1,9 @@
+/**
+ * Forgot Password Page Component
+ * Implements a 2-step password recovery flow using dynamic states:
+ * - Step 1: User enters email; requests and triggers OTP dispatch.
+ * - Step 2: User submits the OTP along with the new password to confirm changes.
+ */
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
@@ -8,25 +14,36 @@ import "./ForgotPassword.css";
 
 export default function ForgotPassword() {
     const navigate = useNavigate();
+    
+    // Tracks current step of password recovery (1 = Email entry/OTP request, 2 = OTP validation/Password reset)
     const [step, setStep] = useState(1);
+    
+    // Tracks submission loading state to disable buttons and inputs during network requests
     const [loading, setLoading] = useState(false);
+    
+    // Toggles visibility of the password characters in the input field
     const [showPassword, setShowPassword] = useState(false);
 
-    // Form State
+    // Form inputs state values
     const [email, setEmail] = useState("");
     const [otp, setOtp] = useState("");
     const [newPassword, setNewPassword] = useState("");
 
-    // Step 1: Request OTP
+    /**
+     * Step 1: Submits user email to request verification OTP.
+     * Triggers backend email delivery and advances state to Step 2.
+     * @param {Event} e - Form submission event
+     */
     const handleRequestOTP = async (e) => {
         e.preventDefault();
         if (!email) return toast.error("Please enter your email");
 
         setLoading(true);
         try {
+            // Trigger OTP request call to API
             await requestPasswordResetOTP({ email });
             toast.success("OTP sent to your email!");
-            setStep(2);
+            setStep(2); // Transition screen to OTP input form
         } catch (err) {
             toast.error(err.response?.data?.message || "Failed to send OTP");
         } finally {
@@ -34,7 +51,11 @@ export default function ForgotPassword() {
         }
     };
 
-    // Step 2: Reset Password
+    /**
+     * Step 2: Validates OTP and updates account password.
+     * Submits payload and redirects to Login page on success.
+     * @param {Event} e - Form submission event
+     */
     const handleResetPassword = async (e) => {
         e.preventDefault();
         if (!otp || !newPassword) return toast.error("Please fill all fields");
@@ -42,8 +63,10 @@ export default function ForgotPassword() {
 
         setLoading(true);
         try {
+            // Submit verification code and new password credentials
             await resetPassword({ email, otp, newPassword });
             toast.success("Password reset successfully!");
+            // Short delay to allow user to see success toast before redirect
             setTimeout(() => navigate("/login"), 1500);
         } catch (err) {
             toast.error(err.response?.data?.message || "Invalid OTP or failed to reset");
@@ -54,11 +77,13 @@ export default function ForgotPassword() {
 
     return (
         <div className="login-page">
+            {/* Page background glowing visual graphics */}
             <div className="login-bg">
                 <div className="orb orb-1"></div>
                 <div className="orb orb-2"></div>
             </div>
 
+            {/* Centered card structure layout */}
             <div className="login-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
                 <div className="forgot-password-card" style={{
                     background: 'rgba(26, 26, 46, 0.65)',
@@ -70,6 +95,7 @@ export default function ForgotPassword() {
                     maxWidth: '450px',
                     boxShadow: '0 24px 80px rgba(0, 0, 0, 0.5)'
                 }}>
+                    {/* Hot Toast popup alerts container */}
                     <Toaster position="top-center" />
 
                     <div className="login-header" style={{ marginBottom: '32px', textAlign: 'center' }}>
@@ -78,6 +104,7 @@ export default function ForgotPassword() {
                         <p>{step === 1 ? "Enter your email to receive an OTP" : "Enter the OTP sent to your email"}</p>
                     </div>
 
+                    {/* Step 1 Form Layout: Input Email Address */}
                     {step === 1 ? (
                         <form onSubmit={handleRequestOTP} className="login-form">
                             <FormInput
@@ -98,6 +125,7 @@ export default function ForgotPassword() {
                             </button>
                         </form>
                     ) : (
+                        // Step 2 Form Layout: Input OTP Code and New Password
                         <form onSubmit={handleResetPassword} className="login-form">
                             <FormInput
                                 label="Enter OTP"
@@ -126,6 +154,7 @@ export default function ForgotPassword() {
                                     disabled={loading}
                                     style={{ paddingRight: '46px' }}
                                 />
+                                {/* Clickable eye icon overlay to toggle password character visibility */}
                                 <button
                                     type="button"
                                     className="password-toggle"

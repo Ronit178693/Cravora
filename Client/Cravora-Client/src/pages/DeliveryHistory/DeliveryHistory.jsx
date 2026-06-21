@@ -1,3 +1,10 @@
+/**
+ * Delivery History Page Component
+ * Allows delivery runners to browse records of their claimed and completed deliveries.
+ * - Fetches food order deliveries and parcel packages deliveries in parallel.
+ * - Merges and normalizes the datasets into a unified timeline sorted descending by date.
+ * - Renders summary statistics (total deliveries, total earnings) and supports filtering.
+ */
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getMyOrderDeliveries } from '../../api/orderApi';
@@ -8,27 +15,34 @@ import HistoryList from '../../components/RunnerDashboard/HistoryList';
 import '../Dashboard/StudentDashboard.css';
 
 const DeliveryHistory = () => {
+    // Array containing normalized list of both food and package deliveries handled by this runner
     const [deliveries, setDeliveries] = useState([]);
+    
+    // Loader indicator flag
     const [loading, setLoading] = useState(true);
+    
+    // Status filter state ('All', 'Orders', or 'Packages')
     const [filter, setFilter] = useState('All'); // All, Orders, Packages
 
+    // Fetch and merge logs on component mount
     useEffect(() => {
         (async () => {
             try {
+                // Fetch runner delivery logs in parallel
                 const [ordRes, pkgRes] = await Promise.all([
                     getMyOrderDeliveries(),
                     getMyDeliveries(),
                 ]);
 
-                // Normalize into a unified list
+                // Normalize both collections to support unified rendering
                 const orders = (ordRes.data.orders || []).map(o => ({
-                    ...o, _type: 'order',
+                    ...o, _type: 'order', // Tag to distinguish object type
                 }));
                 const packages = (pkgRes.data.packages || []).map(p => ({
-                    ...p, _type: 'package',
+                    ...p, _type: 'package', // Tag to distinguish object type
                 }));
 
-                // Merge and sort by date descending
+                // Merge collections and sort descending by creation date
                 const all = [...orders, ...packages].sort(
                     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
                 );
@@ -41,12 +55,16 @@ const DeliveryHistory = () => {
         })();
     }, []);
 
+    // Filter list based on currently selected tab
     const filtered = filter === 'All'
         ? deliveries
         : filter === 'Orders'
             ? deliveries.filter(d => d._type === 'order')
             : deliveries.filter(d => d._type === 'package');
 
+    /**
+     * Resolves badge color indicators for UI highlight.
+     */
     const getStatusColor = (status) => {
         const colors = {
             Pending: '#f59e0b', Accepted: '#3b82f6', Preparing: '#8b5cf6',
@@ -56,6 +74,9 @@ const DeliveryHistory = () => {
         return colors[status] || '#6b7280';
     };
 
+    /**
+     * Resolves status icon components dynamically.
+     */
     const getStatusIcon = (status) => {
         if (status === 'Delivered') return <CheckCircle size={13} />;
         if (status === 'Cancelled') return <X size={13} />;
@@ -63,12 +84,15 @@ const DeliveryHistory = () => {
         return <Clock size={13} />;
     };
 
+    /**
+     * Formats date object to Indian locales representation.
+     */
     const formatDate = (date) => new Date(date).toLocaleDateString('en-IN', {
         day: 'numeric', month: 'short', year: 'numeric',
         hour: '2-digit', minute: '2-digit'
     });
 
-    // Stats
+    // Calculate sum statistics
     const totalDelivered = deliveries.filter(d => d.status === 'Delivered').length;
     const totalEarned = deliveries
         .filter(d => d.status === 'Delivered')
@@ -89,7 +113,7 @@ const DeliveryHistory = () => {
                     Your complete record of past deliveries.
                 </p>
 
-                {/* Stats */}
+                {/* Statistical Overview grid */}
                 <div className="dh-stats-row">
                     <div className="dh-stat-card">
                         <span className="dh-stat-value">{totalDelivered}</span>
@@ -105,7 +129,7 @@ const DeliveryHistory = () => {
                     </div>
                 </div>
 
-                {/* Filter tabs */}
+                {/* Filter Selector tabs */}
                 <div className="dh-filter-tabs">
                     {['All', 'Orders', 'Packages'].map(f => (
                         <button
@@ -120,6 +144,7 @@ const DeliveryHistory = () => {
                     ))}
                 </div>
 
+                {/* Loading state or unified listing component */}
                 {loading ? (
                     <div className="sd-loading">Loading history...</div>
                 ) : filtered.length === 0 ? (
@@ -129,7 +154,7 @@ const DeliveryHistory = () => {
                         <p>Accept deliveries from the runner dashboard to see your history here.</p>
                     </div>
                 ) : (
-                    /* History List Sub-Component */
+                    /* Normalized list renderer */
                     <HistoryList
                         filtered={filtered}
                         formatDate={formatDate}

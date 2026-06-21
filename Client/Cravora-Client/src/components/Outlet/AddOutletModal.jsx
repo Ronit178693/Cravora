@@ -4,7 +4,17 @@ import toast from 'react-hot-toast';
 import { X, Store, MapPin, Phone, Clock, FileText, Upload, Image as ImageIcon, Check, XCircle } from 'lucide-react';
 import './AddOutletModal.css';
 
+/**
+ * AddOutletModal Component
+ * Renders the modal overlay for registering a new merchant food outlet.
+ * Collects name, location, telephone contact, operating/working hours, descriptions,
+ * and cover image file uploads. Submits values as multipart/form-data.
+ *
+ * @param {Function} onClose - Callback function triggered to close the modal overlay
+ * @param {Function} onSuccess - Callback triggered upon successful creation to refresh outlet listings
+ */
 const AddOutletModal = ({ onClose, onSuccess }) => {
+    // Form input value mappings
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -14,6 +24,8 @@ const AddOutletModal = ({ onClose, onSuccess }) => {
         closeTime: '',
         image: null
     });
+    
+    // Hold object url of locally uploaded file for immediate UI thumbnail rendering
     const [imagePreview, setImagePreview] = useState(null);
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});

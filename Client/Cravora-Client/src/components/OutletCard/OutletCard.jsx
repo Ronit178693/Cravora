@@ -3,7 +3,23 @@ import { Link } from 'react-router-dom';
 import { MapPin, Clock } from 'lucide-react';
 import { baseURL } from '../../utils/API_paths';
 
+/**
+ * OutletCard Component
+ * Displays a summary preview card of a merchant outlet (including thumbnail image, open status, 
+ * location, and operating hours). Wraps the contents inside a React Router link pointing to 
+ * the corresponding detailed outlet page.
+ *
+ * @param {Object} outlet - Outlet database model object containing images, description, working hours, etc.
+ * @param {Number} index - Loop iteration index used to stagger CSS scale/fade-in animations.
+ */
 const OutletCard = ({ outlet, index = 0 }) => {
+    
+    /**
+     * getImageUrl
+     * Normalizes image path from the backend storage to serve as an absolute source URL.
+     * @param {String[]} images - Array of image path strings
+     * @returns {String|null} Absolute URL string or null if empty
+     */
     const getImageUrl = (images) => {
         if (!images || images.length === 0) return null;
         const img = images[0];
@@ -11,6 +27,7 @@ const OutletCard = ({ outlet, index = 0 }) => {
         return `${baseURL}/${img.replace(/\\/g, '/')}`;
     };
 
+    // Pre-calculate verified image URL or fallback placeholder
     const imageUrl = getImageUrl(outlet.images);
 
     return (

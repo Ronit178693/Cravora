@@ -2,12 +2,12 @@ import { Navigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 
 /**
- * ProtectedRoute — wraps pages that require authentication.
- * - If still checking auth, shows a loading spinner.
- * - If not authenticated, redirects to /login.
- * - If `roles` is provided, checks the user's role; redirects to / if unauthorized.
+ * ProtectedRoute Component
+ * Route wrapper that restricts access based on authentication status and user roles.
+ * 
+ * @param {ReactNode} children - Component(s) to render if access is authorized
+ * @param {String[]} roles - Array of user roles allowed to access this route (e.g., ['Student', 'Runner'])
  */
-// Gets the role from the user and checks if it is authorized to access the page
 const ProtectedRoute = ({ children, roles }) => {
     const { user, isCheckingSession } = useAuth();
     

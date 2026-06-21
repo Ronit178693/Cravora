@@ -1,10 +1,18 @@
-// Backend URL and conditions for production and development
-// mport.meta.env.MODE is a built-in variable in Vite that tells you the current mode
-// "development" is the default mode for development
-// "production" is the default mode for production
+/**
+ * API Paths & URL Configurations
+ * Configures the backend base URL dynamically depending on the execution environment
+ * and exports a clean dictionary of all relative API route patterns used in Axios calls.
+ */
+
+// Dynamically sets backend server URL based on the environment (development vs. production rendering host)
 export const baseURL = import.meta.env.MODE === "development" ? "http://localhost:5000" : "https://cravora.onrender.com";
 
+/**
+ * API Routing Directory Dictionary
+ * Groups all endpoint strings systematically by resource type/domain
+ */
 export const API_PATHS = {
+    // User Authentication & OTP Session Management endpoints
     AUTH: {
         REGISTER: "/api/auth/register",
         LOGIN: "/api/auth/login",
@@ -12,27 +20,32 @@ export const API_PATHS = {
         PASSWORD_RESET_OTP: "/api/auth/password-reset-otp",
         RESET_PASSWORD: "/api/auth/reset-password",
     },
+    // Food Outlet Metadata & Query routes
     OUTLET: {
-        // For Owner
+        // Merchant Management APIs
         MY_OUTLET: "/api/outlets/me/outlet",
         ADD: "/api/outlets/addOutlet",
         UPDATE: "/api/outlets/updateOutlet/:id",
         DELETE: "/api/outlets/deleteOutlet/:id",
-        // For Customer
+        // Student Discovery APIs
         GET_ALL: "/api/outlets/allOutlet",
         GET_BY_ID: "/api/outlets/getOutlet/:id",
     },
+    // User Account Profile details
     USER: {
         GET_ME: "/api/users/me",
     },
+    // General Dashboard data
     DASHBOARD: {
         GET_PROFILE: "/api/dashboard/profile",
     },
+    // Merchant Menu Item CRUD updates
     MENU: {
         ADD: "/api/menu/addMenu-item/:id",
         UPDATE: "/api/menu/:id/item/:itemId",
         DELETE: "/api/menu/:id/item/:itemId",
     },
+    // Food Order Placement & Tracking State lifecycle APIs
     ORDER: {
         PLACE_ORDER: "/api/orders/",
         MY_ORDERS: "/api/orders/my-orders",
@@ -45,6 +58,7 @@ export const API_PATHS = {
         CANCEL_ORDER: "/api/orders/:id/cancel",
         MY_ORDER_DELIVERIES: "/api/orders/my-deliveries",
     },
+    // Peer-to-Peer Campus Parcel Delivery lifecycle APIs
     PACKAGE: {
         CREATE: "/api/packages/",
         MY_PACKAGES: "/api/packages/my-packages",

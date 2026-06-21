@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Pencil, Check, X } from 'lucide-react';
 
+/**
+ * EditableField Component
+ * Renders a value that can be edited in place. Toggles between raw text/textarea input 
+ * views and formatted text display labels, exposing edit, save, and cancel actions.
+ *
+ * @param {String} value - Current text/value displayed inside the component
+ * @param {Function} onSave - Async callback dispatching the edited value to the server (e.g. updating location, phone)
+ * @param {String} label - Section label name displayed above the value
+ * @param {String} type - Input element type ('text' | 'textarea' | 'time' etc.)
+ * @param {Number} rows - Row count (applicable only when type is 'textarea')
+ * @param {String} placeholder - Form input placeholder string
+ */
 const EditableField = ({
     value,
     onSave,
@@ -9,7 +21,9 @@ const EditableField = ({
     rows = 3,
     placeholder = ''
 }) => {
+    // Controls edit mode toggle
     const [isEditing, setIsEditing] = useState(false);
+    // Temporary value buffer to hold keyboard input before save
     const [currentValue, setCurrentValue] = useState(value);
     const [loading, setLoading] = useState(false);
 

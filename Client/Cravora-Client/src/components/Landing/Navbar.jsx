@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * Navbar Component (Landing Page Specific)
+ * Renders the simple landing page navigation header. 
+ * Adds active scroll listeners to trigger background blur/styling changes.
+ */
 export default function Navbar() {
+    // Scroll state - toggles styling when the user scrolls past a threshold
     const [scrolled, setScrolled] = useState(false);
     const navigate = useNavigate();
 

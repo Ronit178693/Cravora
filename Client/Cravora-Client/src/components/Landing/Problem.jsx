@@ -1,3 +1,8 @@
+/**
+ * Problem Component
+ * Highlights campus food/delivery problems (long wait times, lack of delivery, limited earning options)
+ * solved by Cravora.
+ */
 export default function Problem() {
     return (
         <section className="problem-section">

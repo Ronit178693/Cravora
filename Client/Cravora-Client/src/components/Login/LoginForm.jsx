@@ -5,18 +5,34 @@ import toast, { Toaster } from "react-hot-toast";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import FormInput from "../FormInput/FormInput";
 
+/**
+ * LoginForm Component
+ * Handles the user login interface, local form validations, submit actions,
+ * and routing redirects based on the authenticated user's assigned role.
+ */
 export default function LoginForm() {
     const navigate = useNavigate();
+    // Retrieve authentication API state and login dispatcher from the global Auth hook
     const { login, loading, isCheckingSession } = useAuth();
 
+    // Form inputs state
     const [form, setForm] = useState({
         email: "",
         password: "",
     });
 
+    // Password visibility toggle state
     const [showPassword, setShowPassword] = useState(false);
+    
+    // Store validation error messages mapped by field name
     const [errors, setErrors] = useState({});
 
+    /**
+     * handleChange
+     * Generic input change handler that synchronizes input values to state
+     * and clears active validation errors for that field.
+     * @param {React.ChangeEvent<HTMLInputElement>} e - Input change event
+     */
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
         if (errors[e.target.name]) {
@@ -24,6 +40,11 @@ export default function LoginForm() {
         }
     };
 
+    /**
+     * validate
+     * Validates input values before hitting login API endpoint.
+     * @returns {Object} Key-value pair of found errors
+     */
     const validate = () => {
         const errs = {};
         if (!form.email.trim()) errs.email = "Email is required";
@@ -31,6 +52,13 @@ export default function LoginForm() {
         return errs;
     };
 
+    /**
+     * handleSubmit
+     * Intercepts form submit event, performs validations, and triggers login authentication.
+     * Redirects users to appropriate dashboards depending on user.role (Student/Runner/Outlet).
+     * @param {React.FormEvent} e - Submit event
+     * @returns {Promise<void>}
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
         const errs = validate();
@@ -41,11 +69,13 @@ export default function LoginForm() {
         try {
             const res = await login(form);
             toast.success("Logged in successfully!");
+            
+            // Redirect paths depend on specific user roles
             if (res.user.role === "Outlet") {
                 setTimeout(() => navigate("/outlet-dashboard"), 1200);
             }
             else if (res.user.role === "Student" || res.user.role === "Runner") {
-                // All students (including those acting as runners) start at the student dashboard
+                // All student-tier and runner-tier users land first at the student dashboard
                 setTimeout(() => navigate("/student-dashboard"), 1200);
             }
             else {

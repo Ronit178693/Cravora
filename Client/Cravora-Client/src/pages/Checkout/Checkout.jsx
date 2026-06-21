@@ -1,3 +1,8 @@
+/**
+ * Checkout Page Component
+ * Handles displaying cart items, capturing delivery locations, placing orders,
+ * and displaying the Order Tracker inline after successful order placements.
+ */
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -12,19 +17,35 @@ import OrderSummary from '../../components/Checkout/OrderSummary';
 import '../Dashboard/StudentDashboard.css';
 
 const Checkout = () => {
+    // Destructure active cart states and item editing methods from CartContext
     const { cart, updateQuantity, removeItem, clearCart, totalPrice } = useCart();
+    
+    // Captured delivery dropoff location input text
     const [dropLocation, setDropLocation] = useState('');
+    
+    // Submission status flag during API request
     const [placing, setPlacing] = useState(false);
+    
+    // Once order succeeds, stores the generated Order ID to trigger inline tracking view
     const [placedOrderId, setPlacedOrderId] = useState(null);
 
+    // Enforced delivery fee (fixed client tip value for runner incentive)
     const deliveryFee = 15;
 
+    /**
+     * Resolves absolute item image URL.
+     * @param {String} img - relative or absolute image path
+     */
     const getImageUrl = (img) => {
         if (!img) return null;
         if (img.startsWith('http')) return img;
         return `${baseURL}/${img.replace(/\\/g, '/')}`;
     };
 
+    /**
+     * Places customer order.
+     * Triggers POST request to order placement endpoint, clears cart, and opens Order Tracker.
+     */
     const handlePlaceOrder = async () => {
         if (!dropLocation.trim()) {
             toast.error('Please enter a delivery location');
@@ -47,8 +68,8 @@ const Checkout = () => {
             });
 
             toast.success('Order placed successfully!');
-            setPlacedOrderId(res.data.order._id);
-            clearCart();
+            setPlacedOrderId(res.data.order._id); // Triggers conditional inline tracking screen
+            clearCart(); // Clear local shopping cart state
         } catch (err) {
             console.error('Error placing order:', err);
             toast.error(err.response?.data?.message || 'Failed to place order');
@@ -57,7 +78,7 @@ const Checkout = () => {
         }
     };
 
-    // --- After order placed: show inline tracking ---
+    // --- Conditional Screen 1: Order placed successfully (displays live tracking) ---
     if (placedOrderId) {
         return (
             <div className="sd-page">
@@ -70,6 +91,7 @@ const Checkout = () => {
                         Your order is being processed. Track it below in real-time.
                     </p>
 
+                    {/* Inline real-time order status tracking card */}
                     <OrderTracker orderId={placedOrderId} />
 
                     <div style={{ textAlign: 'center', marginTop: '32px' }}>
@@ -86,7 +108,7 @@ const Checkout = () => {
         );
     }
 
-    // --- Empty cart state ---
+    // --- Conditional Screen 2: Empty cart state ---
     if (cart.items.length === 0) {
         return (
             <div className="sd-page">
@@ -104,7 +126,7 @@ const Checkout = () => {
         );
     }
 
-    // --- Active cart: checkout form ---
+    // --- Default Screen: Active checkout billing form ---
     return (
         <div className="sd-page">
             <Navbar />
@@ -131,7 +153,7 @@ const Checkout = () => {
                 </p>
 
                 <div className="sd-checkout-layout">
-                    {/* Items List Sub-Component */}
+                    {/* Items List Sub-Component (Handles quantities and item removal displays) */}
                     <CartList
                         items={cart.items}
                         getImageUrl={getImageUrl}
@@ -139,7 +161,7 @@ const Checkout = () => {
                         removeItem={removeItem}
                     />
 
-                    {/* Order Summary Sub-Component */}
+                    {/* Order Summary Sub-Component (Displays subtotal, tax fees, address inputs, submit btn) */}
                     <OrderSummary
                         totalPrice={totalPrice}
                         deliveryFee={deliveryFee}

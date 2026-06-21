@@ -2,6 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { RefreshCw, Clock, ChevronRight } from 'lucide-react';
 
+/**
+ * StatsBar Component
+ * Renders the Runner Dashboard header containing title descriptions, action buttons 
+ * to manually poll/refresh available assignments, and a link routing to delivery histories.
+ *
+ * @param {Function} fetchAll - Trigger function fetching available/assigned runner details from server
+ * @param {Boolean} refreshing - Indicates if refreshing fetch operation is currently in flight
+ */
 const StatsBar = ({ fetchAll, refreshing }) => {
     return (
         <div className="rd-header">

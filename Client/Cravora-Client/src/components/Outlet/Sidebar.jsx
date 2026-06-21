@@ -6,12 +6,24 @@ import { toast } from 'react-hot-toast';
 import { Store, UtensilsCrossed, Package, LogOut } from 'lucide-react';
 import './Sidebar.css';
 
+/**
+ * Sidebar Component
+ * Left-side navigation bar for merchant/outlet dashboard pages.
+ * Displays merchant profile details (avatar, name, email) and routes to Outlets,
+ * Menu, Orders management, and a Logout action trigger.
+ */
 const Sidebar = () => {
+    // Access context and helpers
     const { user, logout } = useContext(AuthContext);
-    // Gives access to the current url info
     const location = useLocation();
     const navigate = useNavigate();
 
+    /**
+     * isActive
+     * Checks if a navigation option is the active URL route.
+     * @param {String} path - Target path string to verify
+     * @returns {Boolean} True if matched
+     */
     const isActive = (path) => location.pathname === path;
 
     const handleLogout = async () => {

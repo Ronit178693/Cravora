@@ -1,3 +1,7 @@
+/**
+ * Footer Component
+ * Renders the global footer elements for the public facing landing pages.
+ */
 export default function Footer() {
     return (
         <footer className="landing-footer">

@@ -8,128 +8,162 @@ import { AuthContext } from '../../context/AuthContext';
 import { Search, ChevronDown, Truck, Package, X, User, LogOut, ShoppingBag, Clock } from 'lucide-react';
 import '../../pages/Home/Home.css';
 
+/**
+ * Navbar Component
+ * Renders the global navigation header with search capabilities, links to runner/parcel panels,
+ * and a profile drawer showcasing recent order history, delivery histories, and user roles.
+ */
 const Navbar = () => {
 
+    // Context & Navigation hooks
     const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    // Scroll state - toggles styling when the user scrolls past a threshold
     const [scrolled, setScrolled] = useState(false);
-    // Dropdown open is a boolean that is true when the dropdown is open
+
+    // Dropdown visibility state for the 'More' options (Runner Dashboard, Order Parcel)
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    // Profile panel open
+
+    // Profile drawer toggle state
     const [profileOpen, setProfileOpen] = useState(false);
-    // Order history for profile panel
+
+    // User's order list & associated loading indicator for the profile drawer
     const [orderHistory, setOrderHistory] = useState([]);
     const [ordersLoading, setOrdersLoading] = useState(false);
-    // Delivery history for profile panel
+
+    // User's active or previous delivery history (for package or food runners)
     const [deliveryHistory, setDeliveryHistory] = useState([]);
     const [deliveriesLoading, setDeliveriesLoading] = useState(false);
-    // Mobile menu open is a boolean that is true when the mobile menu is open
+
+    // Toggle for the mobile navigation drawer menu
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    // Search query
+
+    // Global outlet/item search query and computed search matches
     const [searchQuery, setSearchQuery] = useState('');
-    // Stores searched results
     const [searchResults, setSearchResults] = useState([]);
-    // Search focused is a boolean that is true when the search bar is focused
     const [searchFocused, setSearchFocused] = useState(false);
-    // All outlets
+
+    // Complete list of outlets fetched from the backend (used to perform local searching)
     const [allOutlets, setAllOutlets] = useState([]);
-    const navigate = useNavigate();
-    // To interact with DOM elements
+
+    // DOM references for closing dropdowns/drawers when clicking outside
     const dropdownRef = useRef(null);
     const searchRef = useRef(null);
     const profileRef = useRef(null);
 
-    // Runs only after first render
+    /**
+     * Effect Hook - Scroll Listener
+     * Triggers a state update when the user scrolls down more than 50 pixels,
+     * allowing CSS styles to add background blur/shadow.
+     */
     useEffect(() => {
-        // Handle scroll effect which turns setScrolled true when scrolled more than 50px
         const handleScroll = () => setScrolled(window.scrollY > 50);
-        // Using the function above to add event listener for scroll
         window.addEventListener('scroll', handleScroll);
-        // Cleanup function to remove event listener
+        
+        // Cleanup event listener on unmount to prevent memory leaks
         return () => window.removeEventListener('scroll', handleScroll);
-        // Cleaning up the event listener is imp. as components mouts everytime which leads to memory leak
     }, []);
 
-    // Fetch outlets once for search
-    // When the ui renders we have all the Outlets in a state
+    /**
+     * Effect Hook - Outlet Loader
+     * Fetches all registered outlets on initial mount to populate the local search index.
+     */
     useEffect(() => {
         const loadOutlets = async () => {
             try {
                 const res = await getAllOutlets();
                 setAllOutlets(res.data.outlets || []);
-            } catch { /* silent */ }
+            } catch (err) {
+                console.error("Failed to load outlets for navbar search context:", err);
+            }
         };
         loadOutlets();
     }, []);
 
-    // Fetch order history and delivery history when profile panel opens
+    /**
+     * Effect Hook - Profile Panel Stats Loader
+     * Lazily fetches the current user's order and delivery history lists
+     * only when the profile dropdown/panel is opened.
+     */
     useEffect(() => {
-        // Only fetch when profile panel opens
         if (profileOpen) {
             const loadOrders = async () => {
                 setOrdersLoading(true);
                 try {
                     const res = await getMyOrders();
                     setOrderHistory(res.data.orders || []);
-                } catch { /* silent */ }
-                finally { setOrdersLoading(false); }
+                } catch (err) {
+                    console.error("Failed to fetch order history for profile panel:", err);
+                } finally {
+                    setOrdersLoading(false);
+                }
             };
             const loadDeliveries = async () => {
                 setDeliveriesLoading(true);
                 try {
                     const res = await getMyDeliveries();
-                    // Sets both food deliveries and packages
                     setDeliveryHistory(res.data.deliveries || res.data.packages || []);
-                } catch { /* silent */ }
-                finally { setDeliveriesLoading(false); }
+                } catch (err) {
+                    console.error("Failed to fetch delivery history for profile panel:", err);
+                } finally {
+                    setDeliveriesLoading(false);
+                }
             };
-            // Calling both the created functions 
             loadOrders();
             loadDeliveries();
         }
     }, [profileOpen]);
 
-    // Close dropdown on outside click
+    /**
+     * Effect Hook - Click Outside Handler
+     * Listens for clicks outside dropdown menus or panels to automatically close them.
+     */
     useEffect(() => {
-        // HnadleClickOutside function with an event e
         const handleClickOutside = (e) => {
-            // if the dropdown is open and the click is outside the dropdown
+            // Close the 'More' dropdown if user clicks outside of it
             if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
                 setDropdownOpen(false);
             }
-            // if the search is focused and the click is outside the search
+            // Defocus search results if user clicks elsewhere
             if (searchRef.current && !searchRef.current.contains(e.target)) {
                 setSearchFocused(false);
             }
-            // if the profile panel is open and the click is outside
+            // Close profile panel if user clicks outside of the panel
             if (profileRef.current && !profileRef.current.contains(e.target)) {
                 setProfileOpen(false);
             }
         };
-        // A js event listener to detect click outside the dropdown and search bar
         document.addEventListener('mousedown', handleClickOutside);
-        // Cleanup function to remove event listener
+        
+        // Remove event listener on unmount
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // Search logic — filter outlets and their menu items
+    /**
+     * Effect Hook - Search Filter Logic
+     * Performs a local fuzzy search over the cached `allOutlets` list,
+     * matching either the outlet's name or its menu items' names/categories.
+     */
     useEffect(() => {
-        // If there is no search query, return empty results
         if (!searchQuery.trim()) {
             setSearchResults([]);
             return;
         }
-        // Converts the search query to lowercase
         const q = searchQuery.toLowerCase();
-        // a results array to store the search results
         const results = [];
-        // Looping through all the outlets we get
+        
         allOutlets.forEach(outlet => {
-            // Match outlet name to the input query
+            // Check if search term matches the outlet name
             if (outlet.name?.toLowerCase().includes(q)) {
-                // pushing the outlet to the results array
-                results.push({ type: 'outlet', id: outlet._id, name: outlet.name, sub: outlet.location || '' });
+                results.push({ 
+                    type: 'outlet', 
+                    id: outlet._id, 
+                    name: outlet.name, 
+                    sub: outlet.location || '' 
+                });
             }
-            // Looping through the menu items
+            // Check if search term matches any items inside the outlet's menu
             outlet.menu?.forEach(item => {
                 if (item.name?.toLowerCase().includes(q) || item.category?.toLowerCase().includes(q)) {
                     results.push({
@@ -142,39 +176,64 @@ const Navbar = () => {
             });
         });
 
+        // Cap search results at 8 items to prevent UI overflow
         setSearchResults(results.slice(0, 8));
     }, [searchQuery, allOutlets]);
 
+    /**
+     * handleLogout
+     * Triggers the logout API, clears current auth profile state, and redirects user to Login page.
+     * @returns {Promise<void>}
+     */
     const handleLogout = async () => {
         try {
             await logoutUser();
             setProfileOpen(false);
             navigate('/login');
         } catch (error) {
-            console.error("Logout failed", error);
+            console.error("Logout process encountered an error:", error);
         }
     };
-    // When user clicks on the search result navigates the user to the resullt and resets the query and focus
+
+    /**
+     * handleSearchSelect
+     * Navigates to the selected outlet detail page, clearing search input and focus.
+     * @param {Object} result - The selected search option object
+     */
     const handleSearchSelect = (result) => {
         navigate(`/outlet/${result.id}`);
         setSearchQuery('');
         setSearchFocused(false);
     };
 
-    // Get user initials for avatar
+    /**
+     * getInitials
+     * Computes the first letters of user's name to render as an avatar.
+     * @returns {String} Up to two uppercase characters or '?' if name is missing
+     */
     const getInitials = () => {
         if (!user?.name) return '?';
         return user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     };
 
-    // Format date for order history
+    /**
+     * formatDate
+     * Helper to format a ISO date string to a localized Indian representation (e.g., 21 Jun 2026).
+     * @param {String} date - ISO Date string
+     * @returns {String} Formatted date string
+     */
     const formatDate = (date) => {
         return new Date(date).toLocaleDateString('en-IN', {
             day: 'numeric', month: 'short', year: 'numeric'
         });
     };
 
-    // Status badge color
+    /**
+     * getStatusColor
+     * Determines color coding mapping for order and delivery status badges.
+     * @param {String} status - Order/package status string
+     * @returns {String} Hex code of corresponding theme color
+     */
     const getStatusColor = (status) => {
         const colors = {
             Pending: '#f59e0b',

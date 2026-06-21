@@ -4,6 +4,11 @@ import { getOrderById } from '../../api/orderApi';
 import { Check, Clock, ChefHat, Truck, Package } from 'lucide-react';
 import '../../pages/Dashboard/StudentDashboard.css';
 
+/**
+ * STATUSES
+ * Roadmap configuration for the order tracking journey map. Defines keys, 
+ * user-friendly labels, sub-descriptions, and icon nodes for each step.
+ */
 const STATUSES = [
     { key: 'Pending', label: 'Order Placed', desc: 'Waiting for outlet to accept', icon: <Clock size={18} /> },
     { key: 'Accepted', label: 'Accepted', desc: 'Outlet accepted your order', icon: <Check size={18} /> },
@@ -12,49 +17,74 @@ const STATUSES = [
     { key: 'Delivered', label: 'Delivered', desc: 'Order delivered!', icon: <Package size={18} /> },
 ];
 
+/**
+ * OrderTracker Component
+ * Performs real-time status polling for a specific order. Renders a step-by-step
+ * progress timeline and detailed receipt information (items, delivery fee, drop location).
+ *
+ * @param {String} orderId - Database identifier of the order to track
+ */
 const OrderTracker = ({ orderId }) => {
+    // Current fetched order document details
     const [order, setOrder] = useState(null);
+    // Initial fetch loading state
     const [loading, setLoading] = useState(true);
-    // Used to store the order status
+    // Reference handle to control the polling setInterval loop
     const intervalRef = useRef(null);
 
+    /**
+     * fetchOrder
+     * Fetches current order state from server. Disables the active polling interval 
+     * if the order reaches a terminal status (e.g. Delivered, Cancelled).
+     * @returns {Promise<void>}
+     */
     const fetchOrder = async () => {
         try {
             const res = await getOrderById(orderId);
             setOrder(res.data.order);
-            // Checks if the order status is delivered or cancelled
+            
+            // Cancel polling if order is delivered or cancelled
             if (['Delivered', 'Cancelled'].includes(res.data.order.status)) {
-                // Stops the interval if the order is delivered or cancelled
-            clearInterval(intervalRef.current);
+                clearInterval(intervalRef.current);
             }
         } catch (err) {
-            console.error('Error fetching order:', err);
+            console.error('Error fetching order status:', err);
         } finally {
             setLoading(false);
         }
     };
-    // This useEffect hook is used to fetch the order status and update it every 5 seconds
+
+    /**
+     * Effect Hook - Polling Loop
+     * Initializes the order status polling interval (runs every 5 seconds).
+     * Cleans up the interval subscription on component unmount.
+     */
     useEffect(() => {
         if (!orderId) return;
-        // Fetches the order
         fetchOrder();
-        // Updates the order status every 5 seconds
+        
+        // Poll status every 5 seconds
         intervalRef.current = setInterval(fetchOrder, 5000);
-        // Clears the interval if the component unmounts
+        
+        // Remove the polling timer during cleanup
         return () => clearInterval(intervalRef.current);
     }, [orderId]);
 
-    // Used to get the index of the current status
+    /**
+     * getStatusIndex
+     * Map current order status string to its index in the STATUSES roadmap.
+     * @param {String} status - Status key string (e.g. 'Preparing')
+     * @returns {Number} Index in status tracker array
+     */
     const getStatusIndex = (status) => STATUSES.findIndex(s => s.key === status);
 
-    // If the order is loading, display a loading message
+    // Initial loading placeholder view
     if (loading) return <div className="sd-loading">Loading order status...</div>;
-    // If the order is not found, display an error message
+    // Missing/invalid order error view
     if (!order) return <div className="sd-empty"><h3>Could not load order</h3></div>;
 
-    // Used to get the index of the current status
+    // Track active timeline coordinates
     const currentIndex = getStatusIndex(order.status);
-    // Used to check if the order is cancelled
     const isCancelled = order.status === 'Cancelled';
 
     return (

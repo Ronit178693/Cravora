@@ -1,6 +1,16 @@
 import React from 'react';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 
+/**
+ * CartList Component
+ * Renders the tabular list of menu items current inside the checkout cart,
+ * exposing controls to increase, decrease, or completely delete items from the cart.
+ *
+ * @param {Object[]} items - Array of active cart items
+ * @param {Function} getImageUrl - Helper function resolving menu item relative path to backend absolute URL
+ * @param {Function} updateQuantity - Callback trigger to increment or decrement cart item quantity
+ * @param {Function} removeItem - Callback trigger to delete the item from the cart
+ */
 const CartList = ({ items, getImageUrl, updateQuantity, removeItem }) => {
     return (
         <div className="sd-checkout-items">

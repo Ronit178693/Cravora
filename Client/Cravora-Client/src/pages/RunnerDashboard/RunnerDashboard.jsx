@@ -1,3 +1,10 @@
+/**
+ * Runner Dashboard Page Component
+ * Allows students to operate as delivery runners.
+ * - Fetches available unclaimed food orders and parcel requests in parallel.
+ * - Displays active claimed deliveries (food order or parcel) with state transition workflows.
+ * - Integrates sub-components: StatsBar, ActiveDelivery, and AvailableList.
+ */
 import React, { useState, useEffect, useCallback } from 'react';
 import { getAvailableOrders, acceptDelivery, updateOrderStatus, getMyOrderDeliveries } from '../../api/orderApi';
 import { getAvailablePackages, acceptPackage, updatePackageStatus, getMyDeliveries } from '../../api/packageApi';
@@ -8,21 +15,37 @@ import AvailableList from '../../components/RunnerDashboard/AvailableList';
 import '../Dashboard/StudentDashboard.css';
 
 const RunnerDashboard = () => {
-    // ── State ──
+    // ── State Variables ──
+    // List of available food orders ready for pickup
     const [availableOrders, setAvailableOrders] = useState([]);
+    
+    // List of available parcel requests ready for pickup
     const [availablePackages, setAvailablePackages] = useState([]);
+    
+    // Stores the runner's currently claimed active job (either a food order or parcel package)
     const [activeDelivery, setActiveDelivery] = useState(null);   // { type: 'order'|'package', data: {...} }
+    
+    // Master loading state spinner trigger
     const [loading, setLoading] = useState(true);
+    
+    // ID of the order/package currently undergoing the "Claim" API transition
     const [accepting, setAccepting] = useState(null);             // id being accepted
+    
+    // Flag to disable state progression buttons during status update requests
     const [updatingStatus, setUpdatingStatus] = useState(false);
+    
+    // Small loader flag for pulling manual refresh updates
     const [refreshing, setRefreshing] = useState(false);
 
-    // ── Fetch everything ──
+    /**
+     * Parallel fetches available orders, packages, and claims history.
+     * Identifies if the runner has an active delivery session in progress.
+     */
     const fetchAll = useCallback(async (showRefresh = false) => {
         if (showRefresh) setRefreshing(true);
         else setLoading(true);
         try {
-            // Fetch in parallel
+            // Fetch multiple dependencies simultaneously
             const [ordRes, pkgRes, myOrdRes, myPkgRes] = await Promise.all([
                 getAvailableOrders(),
                 getAvailablePackages(),
@@ -33,14 +56,16 @@ const RunnerDashboard = () => {
             setAvailableOrders(ordRes.data.orders || []);
             setAvailablePackages(pkgRes.data.packages || []);
 
-            // Find active delivery — any order or package assigned to me that isn't delivered/cancelled
+            // Identify active claimed order in delivery transit
             const activeOrder = (myOrdRes.data.orders || []).find(
                 o => ['OutForDelivery'].includes(o.status)
             );
+            // Identify active claimed package in delivery transit
             const activePkg = (myPkgRes.data.packages || []).find(
                 p => ['Accepted', 'PickedUp'].includes(p.status)
             );
 
+            // Set state to active delivery type
             if (activeOrder) {
                 setActiveDelivery({ type: 'order', data: activeOrder });
             } else if (activePkg) {
@@ -56,9 +81,13 @@ const RunnerDashboard = () => {
         }
     }, []);
 
+    // Initial load on mount
     useEffect(() => { fetchAll(); }, [fetchAll]);
 
-    // ── Accept a delivery ──
+    /**
+     * Claims a campus food order for delivery.
+     * @param {String} orderId - Target order ID
+     */
     const handleAcceptOrder = async (orderId) => {
         setAccepting(orderId);
         try {
@@ -71,6 +100,10 @@ const RunnerDashboard = () => {
         }
     };
 
+    /**
+     * Claims a parcel/package request for delivery.
+     * @param {String} pkgId - Target package ID
+     */
     const handleAcceptPackage = async (pkgId) => {
         setAccepting(pkgId);
         try {
@@ -83,7 +116,10 @@ const RunnerDashboard = () => {
         }
     };
 
-    // ── Update status of active delivery ──
+    /**
+     * Progresses delivery status (e.g. marking as PickedUp or Delivered).
+     * @param {String} nextStatus - target state transition value
+     */
     const handleStatusUpdate = async (nextStatus) => {
         if (!activeDelivery) return;
         setUpdatingStatus(true);
@@ -101,7 +137,10 @@ const RunnerDashboard = () => {
         }
     };
 
-    // ── Status helpers ──
+    /**
+     * Resolves status badge colors for visual highlights.
+     * @param {String} status - delivery status string
+     */
     const getStatusColor = (status) => {
         const colors = {
             Pending: '#f59e0b', Accepted: '#3b82f6', Preparing: '#8b5cf6',
@@ -111,11 +150,16 @@ const RunnerDashboard = () => {
         return colors[status] || '#6b7280';
     };
 
+    /**
+     * Formats database timestamps to Indian standard date-time representations.
+     */
     const formatDate = (date) => new Date(date).toLocaleDateString('en-IN', {
         day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
     });
 
-    // ── What's the next status for the active delivery? ──
+    /**
+     * Resolves the next button prompt depending on current delivery status state.
+     */
     const getNextAction = () => {
         if (!activeDelivery) return null;
         const { type, data } = activeDelivery;

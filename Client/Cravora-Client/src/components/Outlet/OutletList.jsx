@@ -3,15 +3,36 @@ import { useNavigate } from 'react-router-dom';
 import { MapPin, Phone, Clock, Upload, Trash2 } from 'lucide-react';
 import EditableField from './EditableField'; // Ensure this matches your file structure
 
+/**
+ * OutletList Component
+ * Displays a list of food outlets created/managed by a merchant user.
+ * Each card features inline editing options for location, operating hours, phone contacts, 
+ * description, open/closed toggle flags, and a button to delete the entire outlet.
+ *
+ * @param {Object[]} outlets - Array of outlet objects registered to the merchant
+ * @param {Function} onDelete - Delete handler triggered on deleting an outlet
+ * @param {Function} onUpdate - Update handler PATCHing altered fields or files (like image upload)
+ */
 const OutletList = ({ outlets, onDelete, onUpdate }) => {
     const navigate = useNavigate();
 
-    // Helper to format path for display
+    /**
+     * getImageUrl
+     * Normalizes image path from the backend storage to serve as an absolute source URL.
+     * @param {String} imagePath - image path string
+     * @returns {String} Absolute image URL or fallback placeholder URL
+     */
     const getImageUrl = (imagePath) => {
         if (!imagePath) return "https://via.placeholder.com/400x300?text=No+Image";
         return imagePath;
     };
 
+    /**
+     * handleImageUpload
+     * Change handler for image file inputs. Appends file to FormData and dispatches update callback.
+     * @param {React.ChangeEvent} e - Input change event
+     * @param {String} outletId - Target outlet database ID
+     */
     const handleImageUpload = (e, outletId) => {
         const file = e.target.files[0];
         if (file && onUpdate) {

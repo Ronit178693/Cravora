@@ -4,20 +4,32 @@ import { addMenuItem } from '../../api/menuApi';
 import { X, Type, FileText, Image as ImageIcon, Upload, Check, XCircle, DollarSign, Tag } from 'lucide-react';
 import './AddOutletModal.css'; // Reusing the same CSS
 
+/**
+ * AddMenuModal Component
+ * Renders a modal overlay letting merchant managers insert a new food menu item 
+ * (including validation of price range, category selectors, description inputs, 
+ * and Image file binary uploads).
+ *
+ * @param {Function} onClose - Callback trigger closing the modal overlay
+ * @param {Function} onSuccess - Callback invoked on successful API submission to refresh state lists
+ * @param {String} outletId - Target outlet identifier where item is to be added
+ */
 const AddMenuModal = ({ onClose, onSuccess, outletId }) => {
+    // Modal form state mappings
     const [formData, setFormData] = useState({
         name: "",
         description: "",
         price: "",
-        category: "Main Course", // Default category
+        category: "Main Course", // Default starting category
         image: null
     });
 
+    // Holds blob URL string for image rendering before actual submission
     const [imagePreview, setImagePreview] = useState(null);
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
 
-    // Predefined categories - can be moved to constants later
+    // Predefined select options for item categories
     const categories = ["Snacks", "Main Course", "Beverages", "Dessert", "Other"];
 
     const handleChange = (e) => {

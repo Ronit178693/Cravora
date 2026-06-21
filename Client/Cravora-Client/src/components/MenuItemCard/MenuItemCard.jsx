@@ -3,21 +3,40 @@ import { Plus, Minus } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { baseURL } from '../../utils/API_paths';
 
+/**
+ * MenuItemCard Component
+ * Displays a single menu item with its name, image, description, price, and availability.
+ * Provides controls to add items to the cart or adjust quantities.
+ *
+ * @param {Object} item - Menu item details (id, name, price, availability, image)
+ * @param {String} outletId - ID of the outlet offering this item
+ * @param {String} outletName - Name of the outlet
+ * @param {Number} index - Render order index used to stagger CSS entry animation delays
+ */
 const MenuItemCard = ({ item, outletId, outletName, index = 0 }) => {
+    // Access cart operations from context
     const { cart, addItem, updateQuantity } = useCart();
-    // Gets all the items in the cart, using this to find the quantity of a specific item
+    
+    // Find if the current menu item is already in the cart to fetch its current quantity
     const cartItem = cart.items.find(i => i.menuItemId === item._id);
-    // Cart quantity 
     const quantity = cartItem?.quantity || 0;
 
-    // Gets the img url to show it on the item card 
+    /**
+     * getImageUrl
+     * Normalizes image path from backend to construct absolute URL.
+     * @param {String} img - Image name or path
+     * @returns {String|null} Absolute URL string or null if empty
+     */
     const getImageUrl = (img) => {
         if (!img) return null;
         if (img.startsWith('http')) return img;
         return `${baseURL}/${img.replace(/\\/g, '/')}`;
     };
 
-    // Handles adding item to cart 
+    /**
+     * handleAdd
+     * Adds the selected menu item to the cart with default quantity of 1.
+     */
     const handleAdd = () => {
         addItem(
             { menuItemId: item._id, name: item.name, price: item.price, image: item.image },
@@ -26,7 +45,7 @@ const MenuItemCard = ({ item, outletId, outletName, index = 0 }) => {
         );
     };
 
-    // Initially the item is avaliable 
+    // Determine availability status flag
     const isUnavailable = item.isAvailable === false;
 
     return (

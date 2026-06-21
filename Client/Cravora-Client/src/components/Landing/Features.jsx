@@ -1,3 +1,7 @@
+/**
+ * Features Component
+ * Showcases core feature highlights of the Cravora platform (ordering, runner programs, package routing).
+ */
 export default function Features() {
     return (
         <section className="features-section" id="features">

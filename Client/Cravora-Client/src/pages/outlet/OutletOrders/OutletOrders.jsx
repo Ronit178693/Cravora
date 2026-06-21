@@ -1,3 +1,11 @@
+/**
+ * OutletOrders Page Component
+ * Renders the merchant-side orders dashboard where store owners view and progress customer orders.
+ * - Fetches incoming orders destined for the merchant's outlet.
+ * - Categorizes orders into filter tabs: 'pending', 'accepted', 'active', 'completed'.
+ * - Integrates sub-components: OrderTabs, MerchantOrderCard.
+ * - Handles order accept/cancel (reject) actions, and transitions order status (e.g. to "Preparing").
+ */
 import React, { useState, useEffect } from 'react';
 import { getOutletOrders, acceptOrder, updateOrderStatus, cancelOrder } from '../../../api/orderApi.js';
 import '../../Home/Home.css';
@@ -9,14 +17,23 @@ import OrderTabs from '../../../components/OutletOrders/OrderTabs';
 import MerchantOrderCard from '../../../components/OutletOrders/MerchantOrderCard';
 
 const OutletOrders = () => {
+    // Array containing all orders retrieved for this merchant's outlet
     const [orders, setOrders] = useState([]);
+    
+    // UI loader state trigger
     const [loading, setLoading] = useState(true);
+    
+    // Active filter tab: pending, accepted (Accepted/Preparing), active (OutForDelivery), completed (Delivered/Cancelled)
     const [activeTab, setActiveTab] = useState('pending');
 
+    // Fetch orders list on mount
     useEffect(() => {
         fetchOrders();
     }, []);
 
+    /**
+     * Queries database for customer orders belonging to the merchant's outlet.
+     */
     const fetchOrders = async () => {
         try {
             const response = await getOutletOrders();
@@ -30,6 +47,11 @@ const OutletOrders = () => {
         }
     };
 
+    /**
+     * Merchant accepts a newly placed customer order.
+     * Transitions order state from 'Pending' to 'Accepted'.
+     * @param {String} orderId - Target order ID
+     */
     const handleAccept = async (orderId) => {
         try {
             await acceptOrder(orderId);
@@ -41,6 +63,11 @@ const OutletOrders = () => {
         }
     };
 
+    /**
+     * Merchant rejects/cancels a customer order.
+     * Triggers window confirm prompt before PUT API request.
+     * @param {String} orderId - Target order ID
+     */
     const handleReject = async (orderId) => {
         if (window.confirm("Are you sure you want to cancel this order?")) {
             try {
@@ -54,6 +81,11 @@ const OutletOrders = () => {
         }
     };
 
+    /**
+     * Progresses an active order's lifecycle status.
+     * @param {String} orderId - Order ID
+     * @param {String} newStatus - Target status state
+     */
     const handleStatusUpdate = async (orderId, newStatus) => {
         try {
             await updateOrderStatus(orderId, newStatus);
@@ -65,7 +97,7 @@ const OutletOrders = () => {
         }
     };
 
-    // Filter orders by active tab
+    // Filter order objects array according to the selected active tab value
     const filteredOrders = orders.filter(order => {
         switch (activeTab) {
             case 'pending': return order.status === 'Pending';
@@ -76,13 +108,17 @@ const OutletOrders = () => {
         }
     });
 
-    // Count orders per tab
+    // Derive order count values dynamically to overlay counts on tab indicators
     const counts = {
         pending: orders.filter(o => o.status === 'Pending').length,
         accepted: orders.filter(o => ['Accepted', 'Preparing'].includes(o.status)).length,
         completed: orders.filter(o => ['Delivered', 'Cancelled'].includes(o.status)).length,
     };
 
+    /**
+     * Formats database date timestamp into human-readable relative time representation (e.g. "5m ago", "Just now").
+     * @param {String} dateString - ISO Date format string
+     */
     const formatTime = (dateString) => {
         const date = new Date(dateString);
         const now = new Date();
@@ -96,10 +132,16 @@ const OutletOrders = () => {
         return date.toLocaleDateString();
     };
 
+    /**
+     * Resolves lowercase string class name for status indicator styling.
+     */
     const getStatusBadgeClass = (status) => {
         return status.toLowerCase().replace(/\s+/g, '');
     };
 
+    /**
+     * Maps the next logical action required depending on order's current status state.
+     */
     const getNextStatusAction = (order) => {
         switch (order.status) {
             case 'Accepted':
@@ -145,14 +187,14 @@ const OutletOrders = () => {
                         </h1>
                     </div>
 
-                    {/* OrderTabs Sub-Component */}
+                    {/* OrderTabs Sub-Component (Handles status tabs filtering clicks) */}
                     <OrderTabs
                         activeTab={activeTab}
                         setActiveTab={setActiveTab}
                         counts={counts}
                     />
 
-                    {/* Orders List */}
+                    {/* Conditional list view render */}
                     {loading ? (
                         <div style={{ color: 'var(--text-secondary)', textAlign: 'center', marginTop: '50px' }}>
                             Loading orders...
@@ -165,6 +207,7 @@ const OutletOrders = () => {
                     ) : (
                         <div className="orders-list">
                             {filteredOrders.map((order, index) => (
+                                /* Individual customer order card render */
                                 <MerchantOrderCard
                                     key={order._id}
                                     order={order}

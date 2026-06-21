@@ -2,18 +2,47 @@ import React from 'react';
 import { Upload, Trash2 } from 'lucide-react';
 import EditableField from './EditableField';
 
+/**
+ * MenuItemList Component
+ * Renders a grid of menu items for the merchant's portal.
+ * Integrates with EditableField for name, price, and description updates,
+ * exposes availability toggles, image update triggers, and delete buttons.
+ *
+ * @param {Object[]} menuItems - Array of menu item objects currently in the outlet's catalog
+ * @param {Function} onDelete - Callback trigger to delete a menu item
+ * @param {Function} onUpdate - Callback trigger to patch a menu item's fields
+ * @param {Function} onImageUpload - Callback trigger to upload a new item image
+ */
 const MenuItemList = ({ menuItems, onDelete, onUpdate, onImageUpload }) => {
 
+    /**
+     * getImageUrl
+     * Formats menu item image path to serve as valid HTML source.
+     * @param {String} imagePath - relative or absolute image path
+     * @returns {String} Image URL string
+     */
     const getImageUrl = (imagePath) => {
         if (!imagePath) return "https://via.placeholder.com/400x200?text=No+Image";
         if (imagePath.startsWith('http')) return imagePath;
     };
 
+    /**
+     * getCategoryClass
+     * Returns a CSS-friendly string class based on category name.
+     * @param {String} category - Item category string (e.g. 'Main Course')
+     * @returns {String} CSS-safe category slug
+     */
     const getCategoryClass = (category) => {
         if (!category) return 'other';
         return category.toLowerCase().replace(/\s+/g, '-');
     };
 
+    /**
+     * handleImageChange
+     * Change handler for image file inputs. Appends file to FormData and dispatches upload callback.
+     * @param {React.ChangeEvent} e - Input change event
+     * @param {String} itemId - Target menu item database ID
+     */
     const handleImageChange = (e, itemId) => {
         const file = e.target.files[0];
         if (file && onImageUpload) {

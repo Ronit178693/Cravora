@@ -1,5 +1,10 @@
 import { useNavigate } from "react-router-dom";
 
+/**
+ * CTA Component
+ * Renders the Call-to-Action banner at the bottom of the landing page,
+ * encouraging users to register or login.
+ */
 export default function CTA() {
     const navigate = useNavigate();
 

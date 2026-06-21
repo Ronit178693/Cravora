@@ -1,6 +1,12 @@
 import { useState } from "react";
 
+/**
+ * FAQ Component
+ * Renders an accordion-style Frequently Asked Questions section for the landing page.
+ * Keeps track of the open/expanded FAQ index.
+ */
 export default function FAQ() {
+    // Stores index of currently expanded FAQ item
     const [openFaq, setOpenFaq] = useState(null);
 
     const faqs = [

@@ -1,3 +1,7 @@
+/**
+ * SocialProof Component
+ * Showcases stats (users, delivered order counts) and customer testimonial quotes from students.
+ */
 export default function SocialProof() {
     return (
         <section className="social-section">

@@ -1,6 +1,20 @@
 import React from 'react';
 import { MapPin, AlertCircle, Truck, ShoppingBag, Package } from 'lucide-react';
 
+/**
+ * AvailableList Component
+ * Displays grid layouts of all pending orders and packages looking for runner assignment.
+ * Automatically disables buttons and gives a warnings banner if the runner already has
+ * an active assignment in progress.
+ *
+ * @param {Object[]} availableOrders - Array of unassigned restaurant food orders
+ * @param {Object[]} availablePackages - Array of unassigned peer-to-peer package delivery requests
+ * @param {Boolean} hasActiveDelivery - Flag identifying if the current runner is already performing a delivery
+ * @param {String|null} accepting - ID of the order/package currently in the process of being accepted
+ * @param {Function} handleAcceptOrder - Action callback when accepting a food order
+ * @param {Function} handleAcceptPackage - Action callback when accepting a peer-to-peer package
+ * @param {Function} formatDate - Timestamp formatter helper function
+ */
 const AvailableList = ({
     availableOrders,
     availablePackages,

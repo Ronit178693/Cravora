@@ -1,6 +1,22 @@
 import React from 'react';
 import { Check, X, ChefHat, MapPin, User } from 'lucide-react';
 
+/**
+ * MerchantOrderCard Component
+ * Displays a single restaurant food order card in the merchant portal.
+ * Features customer information, ordered food items list, drop location, totals,
+ * and context-sensitive action triggers to Accept, Reject, or progress the order
+ * status (e.g. from Accepted to Preparing, or Preparing to Ready).
+ *
+ * @param {Object} order - Food order data object (containing items list, totals, status, customer profile)
+ * @param {Number} index - Render iteration index used to stagger entry animations
+ * @param {Function} getStatusBadgeClass - Function mapping status to CSS badge classes
+ * @param {Function} formatTime - Timestamp formatter helper function
+ * @param {Function} getNextStatusAction - Helper computing the next available status transition configuration
+ * @param {Function} handleAccept - Action callback on accepting a pending order
+ * @param {Function} handleReject - Action callback on rejecting/cancelling an order
+ * @param {Function} handleStatusUpdate - Action callback to push status updates
+ */
 const MerchantOrderCard = ({
     order,
     index,

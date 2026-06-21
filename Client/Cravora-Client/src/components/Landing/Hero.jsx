@@ -1,5 +1,10 @@
 import { useNavigate } from "react-router-dom";
 
+/**
+ * Hero Component
+ * Renders the top hero screen of the landing page, showing statistics, 
+ * animated gradient branding text, action links, and mock 3D order detail cards.
+ */
 export default function Hero() {
     const navigate = useNavigate();
 

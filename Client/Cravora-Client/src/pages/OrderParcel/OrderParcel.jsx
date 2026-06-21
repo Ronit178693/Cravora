@@ -1,3 +1,9 @@
+/**
+ * Order Parcel Page Component
+ * Allows students to request peer-to-peer package delivery (e.g. food run from gate, laundry drop).
+ * - Renders a form input layout to capture item description, locations, and tip fees (ParcelForm).
+ * - Renders a side list tracking active parcel requests and statuses (ParcelList).
+ */
 import React, { useState, useEffect } from 'react';
 import { createPackage, getMyPackages, cancelPackage } from '../../api/packageApi';
 import { Clock, CheckCircle, Truck, X, AlertCircle } from 'lucide-react';
@@ -8,28 +14,40 @@ import ParcelList from '../../components/OrderParcel/ParcelList';
 import '../Dashboard/StudentDashboard.css';
 
 const OrderParcel = () => {
-    // Form state
+    // Form state variables representing inputs of new parcel requests
     const [form, setForm] = useState({
-        type: 'Courier',
-        description: '',
-        quantity: 1,
-        pickupLocation: '',
-        dropLocation: '',
-        deliveryFee: '',
-        instructions: '',
+        type: 'Courier',       // Type classification (e.g., Courier, Laundry)
+        description: '',       // Summary of parcel contents
+        quantity: 1,           // Count of parcel objects
+        pickupLocation: '',    // Source location on campus
+        dropLocation: '',      // Target destination on campus
+        deliveryFee: '',       // Tip compensation for the runner
+        instructions: '',      // Optional special directions
     });
+    
+    // Submission status flag during API request
     const [submitting, setSubmitting] = useState(false);
 
-    // My packages
+    // List of active and historical packages requested by current user
     const [myPackages, setMyPackages] = useState([]);
+    
+    // Loader flag for package list data fetching
     const [loadingPackages, setLoadingPackages] = useState(true);
+    
+    // Package ID undergoing cancellation request
     const [cancellingId, setCancellingId] = useState(null);
+    
+    // ID of the package card that is expanded for detailed timeline displays
     const [expandedPkg, setExpandedPkg] = useState(null);
 
+    // Fetch package list on mount
     useEffect(() => {
         fetchMyPackages();
     }, []);
 
+    /**
+     * Pulls the user's requested package payloads from the database.
+     */
     const fetchMyPackages = async () => {
         setLoadingPackages(true);
         try {
@@ -42,13 +60,20 @@ const OrderParcel = () => {
         }
     };
 
+    /**
+     * Standard event listener to synchronize form fields into state.
+     */
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm(prev => ({ ...prev, [name]: value }));
     };
 
+    /**
+     * Validates input details and submits new package request to backend.
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
+        // Validation check
         if (!form.type || !form.pickupLocation.trim() || !form.dropLocation.trim()) {
             toast.error('Please fill type, pickup and drop locations');
             return;
@@ -63,11 +88,12 @@ const OrderParcel = () => {
             };
             await createPackage(payload);
             toast.success('Package request created!');
+            // Reset input values
             setForm({
                 type: 'Courier', description: '', quantity: 1,
                 pickupLocation: '', dropLocation: '', deliveryFee: '', instructions: ''
             });
-            fetchMyPackages();
+            fetchMyPackages(); // Refresh listing
         } catch (err) {
             toast.error(err.response?.data?.message || 'Failed to create request');
         } finally {
@@ -75,6 +101,10 @@ const OrderParcel = () => {
         }
     };
 
+    /**
+     * Cancels an active pending parcel request.
+     * @param {String} pkgId - Target package ID
+     */
     const handleCancel = async (pkgId) => {
         setCancellingId(pkgId);
         try {
@@ -88,6 +118,9 @@ const OrderParcel = () => {
         }
     };
 
+    /**
+     * Helper mapping status values to theme colors.
+     */
     const getStatusColor = (status) => {
         const colors = {
             Pending: '#f59e0b', Accepted: '#3b82f6',
@@ -96,6 +129,9 @@ const OrderParcel = () => {
         return colors[status] || '#6b7280';
     };
 
+    /**
+     * Helper mapping status values to lucide icon components.
+     */
     const getStatusIcon = (status) => {
         const icons = {
             Pending: <Clock size={14} />, Accepted: <CheckCircle size={14} />,
@@ -105,14 +141,20 @@ const OrderParcel = () => {
         return icons[status] || <AlertCircle size={14} />;
     };
 
+    /**
+     * Formats database timestamps to Indian locale date representation.
+     */
     const formatDate = (date) => new Date(date).toLocaleDateString('en-IN', {
         day: 'numeric', month: 'short', year: 'numeric',
         hour: '2-digit', minute: '2-digit'
     });
 
-    // Status timeline steps
+    // Array tracking the progression steps of delivery
     const statusSteps = ['Pending', 'Accepted', 'PickedUp', 'Delivered'];
 
+    /**
+     * Resolves index position of active state in the step timeline.
+     */
     const getStepIndex = (status) => {
         if (status === 'Cancelled') return -1;
         return statusSteps.indexOf(status);

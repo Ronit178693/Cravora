@@ -1,6 +1,16 @@
 import React from 'react';
 import { ShoppingBag, Package, MapPin, Truck, Clock } from 'lucide-react';
 
+/**
+ * HistoryList Component
+ * Displays a tabular list of completed or cancelled orders and package delivery jobs
+ * that this runner has processed previously. Shows routes, timestamps, items, and earnings.
+ *
+ * @param {Object[]} filtered - Array of order and package objects matching search/filter constraints
+ * @param {Function} formatDate - Timestamp formatter helper function
+ * @param {Function} getStatusColor - Hex color mapper based on delivery status key
+ * @param {Function} getStatusIcon - Lucide Icon selector function based on status value
+ */
 const HistoryList = ({ filtered, formatDate, getStatusColor, getStatusIcon }) => {
     return (
         <div className="dh-list">

@@ -1,3 +1,7 @@
+/**
+ * HowItWorks Component
+ * Explains the 3-step lifecycle flow of Cravora (Browse, Runner Pickup, Delivery Completion).
+ */
 export default function HowItWorks() {
     return (
         <section className="how-section" id="how">
