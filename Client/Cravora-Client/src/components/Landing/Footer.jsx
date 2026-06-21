@@ -37,7 +37,8 @@ export default function Footer() {
                 <div className="footer-bottom">
                     <p>© 2026 Cravora. Built with ❤️ by students, for students.</p>
                     <div className="footer-socials">
-                        <a href="#" className="footer-social" aria-label="Twitter">𝕏</a>
+                        {/* Proxy links for social platform*/}
+                        <a href="#" className="footer-social" aria-label="Twitter">𝕏</a> 
                         <a href="#" className="footer-social" aria-label="Instagram">📷</a>
                         <a href="#" className="footer-social" aria-label="LinkedIn">in</a>
                     </div>

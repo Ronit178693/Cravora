@@ -10,11 +10,9 @@ import {
     Eye,
     EyeOff,
     GraduationCap,
-    Store,
-    Bike
+    Store
 } from "lucide-react";
 import FormInput from "../FormInput/FormInput";
-// import "../pages/Register.css"; // Reuse ensuring styles apply or move relevant styles
 
 export default function RegisterForm() {
     const navigate = useNavigate();

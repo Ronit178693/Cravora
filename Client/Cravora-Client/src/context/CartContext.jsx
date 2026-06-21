@@ -13,7 +13,7 @@ const cartReducer = (state, action) => {
 
             // Checks if there is something in the cart then checks if the outlet id is same for addons 
             if (state.outletId && state.outletId !== outletId) {
-                // If condition passes the return the outlet details and add one item
+                // If condition passes then return the outlet details and add one item
                 return {
                     outletId,
                     outletName,

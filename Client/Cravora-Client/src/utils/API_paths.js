@@ -26,10 +26,7 @@ export const API_PATHS = {
         GET_ME: "/api/users/me",
     },
     DASHBOARD: {
-        GET_DASHBOARD: "/api/dashboard/",
         GET_PROFILE: "/api/dashboard/profile",
-        GET_RUNNER_DASHBOARD: "/api/dashboard/runner",
-        GET_RUNNER_STATS: "/api/dashboard/runner/stats",
     },
     MENU: {
         ADD: "/api/menu/addMenu-item/:id",

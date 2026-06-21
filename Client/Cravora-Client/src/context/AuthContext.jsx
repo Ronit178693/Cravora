@@ -9,6 +9,7 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(false);   // Changed to false by default
     const [isCheckingSession, setIsCheckingSession] = useState(true); // New state for initial check
+    // Stores any error message returned by the server
     const [error, setError] = useState(null);
 
     // On mount: try to restore session from the HTTP-only cookie

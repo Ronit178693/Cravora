@@ -38,21 +38,21 @@ export default function LoginForm() {
             setErrors(errs);
             return;
         }
-            try {
+        try {
             const res = await login(form);
             toast.success("Logged in successfully!");
-            if(res.user.role === "Outlet"){
+            if (res.user.role === "Outlet") {
                 setTimeout(() => navigate("/outlet-dashboard"), 1200);
             }
-            else if(res.user.role === "Student" || res.user.role === "Runner"){
+            else if (res.user.role === "Student" || res.user.role === "Runner") {
                 // All students (including those acting as runners) start at the student dashboard
                 setTimeout(() => navigate("/student-dashboard"), 1200);
             }
-            else{
+            else {
                 setTimeout(() => navigate("/"), 1200);
             }
-        } 
-         catch (err) {
+        }
+        catch (err) {
             toast.error(err.message || "Invalid credentials");
         }
     };

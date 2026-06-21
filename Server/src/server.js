@@ -12,7 +12,7 @@ import orderRoutes from "./Routes/orderRoutes.js";
 import packageRoutes from "./Routes/packageRoutes.js";
 
 // Step 1: Load environment variables from the .env file
-dotenv.config(); 
+dotenv.config();
 
 // Step 2: Initialize the Express application instance
 const app = express();
@@ -21,7 +21,7 @@ const app = express();
 // Setting to 1 instructs Express to trust the reverse proxy (e.g. Render's load balancer) 
 // directly in front of the application. This ensures that secure cookies (HTTPS) are handled 
 // correctly and client IP addresses are retrieved accurately.
-app.set("trust proxy", 1); 
+app.set("trust proxy", 1);
 
 // Step 4: Establish MongoDB database connection
 Connection();
@@ -33,7 +33,7 @@ app.use(cors(
         origin: function (origin, callback) {
             // Allow server-to-server or REST tool (Postman/Curl) requests where origin is undefined
             if (!origin) return callback(null, true);
-            
+
             // Define list of trusted domains
             const allowedOrigins = ["http://localhost:5173", "https://cravora-chi.vercel.app"];
             if (process.env.CLIENT_URL) allowedOrigins.push(process.env.CLIENT_URL);

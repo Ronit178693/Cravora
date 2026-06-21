@@ -1,5 +1,5 @@
 
-import { Bike, ShoppingBag, Clock } from "lucide-react";
+import {ShoppingBag, Clock } from "lucide-react";
 
 export default function LoginVisuals() {
     return (
