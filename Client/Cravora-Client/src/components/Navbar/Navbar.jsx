@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { logoutUser } from '../../api/authApi';
 import { getAllOutlets } from '../../api/outletApi';
-import { getMyOrders } from '../../api/orderApi';
-import { getMyDeliveries } from '../../api/packageApi';
-import { AuthContext } from '../../context/AuthContext';
+import { getMyOrders, getMyOrderDeliveries } from '../../api/orderApi';
+import { getMyDeliveries, getMyPackages } from '../../api/packageApi';
+import useAuth from '../../hooks/useAuth';
 import { Search, ChevronDown, Truck, Package, X, User, LogOut, ShoppingBag, Clock } from 'lucide-react';
 import '../../pages/Home/Home.css';
 
@@ -15,8 +14,8 @@ import '../../pages/Home/Home.css';
  */
 const Navbar = () => {
 
-    // Context & Navigation hooks
-    const { user } = useContext(AuthContext);
+    // Authentication & Navigation hooks
+    const { user, logout } = useAuth();
     const navigate = useNavigate();
 
     // Scroll state - toggles styling when the user scrolls past a threshold
@@ -91,8 +90,14 @@ const Navbar = () => {
             const loadOrders = async () => {
                 setOrdersLoading(true);
                 try {
-                    const res = await getMyOrders();
-                    setOrderHistory(res.data.orders || []);
+                    const [ordersRes, packagesRes] = await Promise.all([
+                        getMyOrders(),
+                        getMyPackages()
+                    ]);
+                    const orders = (ordersRes.data.orders || []).map(o => ({ ...o, _type: 'order' }));
+                    const packages = (packagesRes.data.packages || []).map(p => ({ ...p, _type: 'package' }));
+                    const combined = [...orders, ...packages].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    setOrderHistory(combined);
                 } catch (err) {
                     console.error("Failed to fetch order history for profile panel:", err);
                 } finally {
@@ -102,8 +107,14 @@ const Navbar = () => {
             const loadDeliveries = async () => {
                 setDeliveriesLoading(true);
                 try {
-                    const res = await getMyDeliveries();
-                    setDeliveryHistory(res.data.deliveries || res.data.packages || []);
+                    const [foodRes, pkgRes] = await Promise.all([
+                        getMyOrderDeliveries(),
+                        getMyDeliveries()
+                    ]);
+                    const foodDeliveries = (foodRes.data.orders || foodRes.data.deliveries || []).map(d => ({ ...d, _type: 'order' }));
+                    const pkgDeliveries = (pkgRes.data.packages || pkgRes.data.deliveries || []).map(d => ({ ...d, _type: 'package' }));
+                    const combined = [...foodDeliveries, ...pkgDeliveries].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    setDeliveryHistory(combined);
                 } catch (err) {
                     console.error("Failed to fetch delivery history for profile panel:", err);
                 } finally {
@@ -187,7 +198,7 @@ const Navbar = () => {
      */
     const handleLogout = async () => {
         try {
-            await logoutUser();
+            await logout();
             setProfileOpen(false);
             navigate('/login');
         } catch (error) {
@@ -406,7 +417,7 @@ const Navbar = () => {
                                                 <div key={delivery._id} className="nav-profile-order-item">
                                                     <div className="nav-profile-order-top">
                                                         <span className="nav-profile-order-id">
-                                                            📦 #{delivery._id.slice(-6).toUpperCase()}
+                                                            {delivery._type === 'package' ? '📦' : '🍔'} #{delivery._id.slice(-6).toUpperCase()}
                                                         </span>
                                                         <span
                                                             className="nav-profile-order-status"
@@ -441,7 +452,7 @@ const Navbar = () => {
                                                 <div key={order._id} className="nav-profile-order-item">
                                                     <div className="nav-profile-order-top">
                                                         <span className="nav-profile-order-id">
-                                                            #{order._id.slice(-6).toUpperCase()}
+                                                            {order._type === 'package' ? '📦' : '🍽️'} #{order._id.slice(-6).toUpperCase()}
                                                         </span>
                                                         <span
                                                             className="nav-profile-order-status"
@@ -451,8 +462,16 @@ const Navbar = () => {
                                                         </span>
                                                     </div>
                                                     <div className="nav-profile-order-bottom">
-                                                        <span>{order.items?.length || 0} items</span>
-                                                        <span>₹{order.totalAmount?.toFixed(0) || '—'}</span>
+                                                        <span>
+                                                            {order._type === 'package'
+                                                                ? `Parcel (${order.type})`
+                                                                : `${order.items?.length || 0} items`}
+                                                        </span>
+                                                        <span>
+                                                            ₹{order._type === 'package'
+                                                                ? order.deliveryFee?.toFixed(0)
+                                                                : order.totalAmount?.toFixed(0) || '—'}
+                                                        </span>
                                                         <span>{formatDate(order.createdAt)}</span>
                                                     </div>
                                                 </div>

@@ -23,6 +23,6 @@ router.post("/password-reset-otp", otpLimiter, passwordResetOTP);
 router.post("/reset-password", otpVerifyLimiter, resetPassword);
 
 // Protected Route: User Logout (requires active JWT session token to clear the cookie)
-router.post("/logout", protect, Logout);
+router.post("/logout", Logout);
 
 export default router;

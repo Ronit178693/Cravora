@@ -13,8 +13,8 @@ import './StudentDashboard.css';
 const Dashboard = () => {
     // Array storing list of outlets retrieved from the server
     const [outlets, setOutlets] = useState([]);
-    
-    // Loading indicator state
+     
+    // Loading indicator state 
     const [loading, setLoading] = useState(true);
 
     // On mount: fetch all outlets from the database

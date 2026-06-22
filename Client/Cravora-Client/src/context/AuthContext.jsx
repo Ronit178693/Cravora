@@ -95,12 +95,11 @@ export function AuthProvider({ children }) {
         setLoading(true);
         try {
             await logoutUser();
-            setUser(null); // Clear authenticated user state
         } catch (err) {
-            const msg = err.response?.data?.message || "Logout failed";
-            setError(msg);
-            throw new Error(msg);
+            console.error("Backend logout failed:", err);
         } finally {
+            setUser(null); // Clear authenticated user state
+            setError(null);
             setLoading(false);
         }
     };
