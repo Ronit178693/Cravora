@@ -7,14 +7,14 @@
  * - Handles CRUD calls for updating names/availability, uploading item images, and deletion.
  */
 import React, { useState, useEffect } from 'react';
-import { getMyOutlet, getOutletById } from '../../../api/outletApi.js';
+import { getMyOutlet, getOutletById, updateOutlet } from '../../../api/outletApi.js';
 import { updateMenuItem, deleteMenuItem } from '../../../api/menuApi.js';
 import '../../Home/Home.css';
 import './ManageMenu.css';
 import Sidebar from '../../../components/Outlet/Sidebar';
 import AddMenuModal from '../../../components/Outlet/AddMenuModal';
 import MenuItemList from '../../../components/Outlet/MenuItemList';
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const ManageMenu = () => {
     // List of owned outlets under the current merchant
@@ -58,8 +58,7 @@ const ManageMenu = () => {
             const response = await getMyOutlet();
             const outletList = response.data.outlets || [];
             setOutlets(outletList);
-            // Auto-select the first outlet to load its menu immediately
-            if (outletList.length > 0) {
+            if (outletList.length > 0 && !selectedOutletId) {
                 setSelectedOutletId(outletList[0]._id);
             }
         } catch (error) {
@@ -68,6 +67,23 @@ const ManageMenu = () => {
             setOutlets([]);
         } finally {
             setLoading(false);
+        }
+    };
+
+    /**
+     * Toggles the open/closed status of the selected outlet.
+     */
+    const handleToggleOutletStatus = async () => {
+        const targetOutlet = outlets.find(o => o._id === selectedOutletId);
+        if (!targetOutlet) return;
+        const newStatus = targetOutlet.isOpen === false ? true : false;
+        try {
+            await updateOutlet(selectedOutletId, { isOpen: newStatus });
+            toast.success(`Outlet is now ${newStatus ? 'Open' : 'Closed'}`);
+            fetchOutlets();
+        } catch (error) {
+            console.error("Error updating outlet status:", error);
+            toast.error("Failed to update outlet status");
         }
     };
 
@@ -162,18 +178,6 @@ const ManageMenu = () => {
             <Sidebar />
 
             <main className="dashboard-main dark-theme">
-                {/* Hot toast popup alert banner */}
-                <Toaster
-                    position="top-center"
-                    toastOptions={{
-                        style: {
-                            background: "var(--bg-card)",
-                            color: "var(--text-primary)",
-                            border: "1px solid var(--border)",
-                            borderRadius: "var(--radius-md)",
-                        },
-                    }}
-                />
 
                 <div style={{ padding: '40px' }}>
                     {/* Header */}
@@ -206,15 +210,46 @@ const ManageMenu = () => {
                                 </div>
                             )}
 
-                            {/* Enable "Add" button only if a valid outlet ID is selected */}
+                            {/* Enable "Add" button and status toggle only if a valid outlet ID is selected */}
                             {selectedOutletId && (
-                                <button
-                                    className="btn-primary"
-                                    onClick={() => setShowAddModal(true)}
-                                    style={{ padding: '12px 24px' }}
-                                >
-                                    + Add Menu Item
-                                </button>
+                                <>
+                                    {selectedOutlet && (
+                                        <button
+                                            type="button"
+                                            onClick={handleToggleOutletStatus}
+                                            style={{
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                gap: '8px',
+                                                padding: '10px 18px',
+                                                borderRadius: '12px',
+                                                border: `1px solid ${selectedOutlet.isOpen !== false ? 'rgba(34, 197, 94, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
+                                                background: selectedOutlet.isOpen !== false ? 'rgba(34, 197, 94, 0.12)' : 'rgba(239, 68, 68, 0.12)',
+                                                color: selectedOutlet.isOpen !== false ? '#22c55e' : '#ef4444',
+                                                fontWeight: '600',
+                                                cursor: 'pointer',
+                                                fontSize: '0.9rem',
+                                                transition: 'all 0.2s'
+                                            }}
+                                            title="Click to toggle Outlet Open/Closed status"
+                                        >
+                                            <span style={{
+                                                width: '8px',
+                                                height: '8px',
+                                                borderRadius: '50%',
+                                                background: selectedOutlet.isOpen !== false ? '#22c55e' : '#ef4444'
+                                            }} />
+                                            {selectedOutlet.isOpen !== false ? 'Status: OPEN' : 'Status: CLOSED'}
+                                        </button>
+                                    )}
+                                    <button
+                                        className="btn-primary"
+                                        onClick={() => setShowAddModal(true)}
+                                        style={{ padding: '12px 24px' }}
+                                    >
+                                        + Add Menu Item
+                                    </button>
+                                </>
                             )}
                         </div>
                     </div>

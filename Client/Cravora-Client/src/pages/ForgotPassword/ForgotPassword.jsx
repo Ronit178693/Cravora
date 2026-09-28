@@ -6,7 +6,7 @@
  */
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { Mail, KeyRound, Lock, ArrowLeft, Send, Eye, EyeOff } from "lucide-react";
 import FormInput from "../../components/FormInput/FormInput.jsx";
 import { requestPasswordResetOTP, resetPassword } from "../../api/authApi";
@@ -95,8 +95,6 @@ export default function ForgotPassword() {
                     maxWidth: '450px',
                     boxShadow: '0 24px 80px rgba(0, 0, 0, 0.5)'
                 }}>
-                    {/* Hot Toast popup alerts container */}
-                    <Toaster position="top-center" />
 
                     <div className="login-header" style={{ marginBottom: '32px', textAlign: 'center' }}>
                         <Link to="/" className="login-logo" style={{ display: 'block', marginBottom: '16px' }}>Cravora</Link>

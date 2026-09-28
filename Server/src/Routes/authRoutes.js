@@ -1,7 +1,6 @@
 import express from "express";
 import { Register, Login, Logout, passwordResetOTP, resetPassword } from "../Controllers/authController.js";
-import { protect } from "../Middlewares/authMiddleware.js";
-import { otpLimiter, otpVerifyLimiter } from "../Middlewares/rateLimitMiddleware.js";
+import { authLimiter, otpLimiter, otpVerifyLimiter } from "../Middlewares/rateLimitMiddleware.js";
 
 const router = express.Router();
 
@@ -10,11 +9,11 @@ const router = express.Router();
  * Maps URL endpoints to respective auth controller functions.
  */
 
-// Public Route: User Registration
-router.post("/register", Register);
+// Public Route: User Registration (Rate-limited to prevent bot registrations)
+router.post("/register", authLimiter, Register);
 
-// Public Route: User Login
-router.post("/login", Login);
+// Public Route: User Login (Rate-limited to prevent brute-force credential stuffing)
+router.post("/login", authLimiter, Login);
 
 // Public Route: Request 6-digit password reset OTP (Rate-limited to prevent email spamming)
 router.post("/password-reset-otp", otpLimiter, passwordResetOTP);

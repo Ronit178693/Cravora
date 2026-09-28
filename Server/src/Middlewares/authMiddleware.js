@@ -9,10 +9,16 @@ import User from '../Models/User.js';
  */
 export const protect = async (req, res, next) => {
   // Step 1: Extract the token from the request's cookies
-  const { token } = req.cookies;
+  let token;
   
   try {
     // Step 2: If no token cookie exists, deny access immediately
+    if(req.cookies && req.cookies.token){
+        token = req.cookies.token;
+    }
+    else if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+      token = req.headers.authorization.split(' ')[1];
+    }
     if (!token) {
         return res.status(401).json({ success: false, message: 'Not authorized, no token' })
     }

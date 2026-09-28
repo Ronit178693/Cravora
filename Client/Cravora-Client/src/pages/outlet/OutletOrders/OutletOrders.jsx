@@ -11,7 +11,7 @@ import { getOutletOrders, acceptOrder, updateOrderStatus, cancelOrder } from '..
 import '../../Home/Home.css';
 import '../ManageMenu/ManageMenu.css';
 import Sidebar from '../../../components/Outlet/Sidebar';
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { ChefHat, Clock, Package } from 'lucide-react';
 import OrderTabs from '../../../components/OutletOrders/OrderTabs';
 import MerchantOrderCard from '../../../components/OutletOrders/MerchantOrderCard';
@@ -163,18 +163,6 @@ const OutletOrders = () => {
             <Sidebar />
 
             <main className="dashboard-main dark-theme">
-                <Toaster
-                    position="top-center"
-                    toastOptions={{
-                        style: {
-                            background: "var(--bg-card)",
-                            color: "var(--text-primary)",
-                            border: "1px solid var(--border)",
-                            borderRadius: "var(--radius-md)",
-                        },
-                    }}
-                />
-
                 <div style={{ padding: '40px' }}>
                     {/* Header */}
                     <div className="dashboard-header" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '20px', marginBottom: '40px' }}>

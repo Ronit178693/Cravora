@@ -1,3 +1,4 @@
+//  Used for parsing multipart 
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../Config/Cloudinary.js";

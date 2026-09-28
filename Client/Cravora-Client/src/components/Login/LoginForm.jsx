@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import FormInput from "../FormInput/FormInput";
 
@@ -89,17 +89,6 @@ export default function LoginForm() {
 
     return (
         <div className="login-form-container">
-            <Toaster
-                position="top-center"
-                toastOptions={{
-                    style: {
-                        background: "var(--bg-card)",
-                        color: "var(--text-primary)",
-                        border: "1px solid var(--border)",
-                        borderRadius: "var(--radius-md)",
-                    },
-                }}
-            />
 
             <div className="login-header">
                 <Link to="/" className="login-logo">Cravora</Link>

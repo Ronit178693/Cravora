@@ -92,9 +92,10 @@ const RunnerDashboard = () => {
         setAccepting(orderId);
         try {
             await acceptDelivery(orderId);
+            toast.success('Delivery order accepted!');
             await fetchAll();
         } catch (err) {
-            alert(err.response?.data?.message || 'Failed to accept delivery');
+            toast.error(err.response?.data?.message || 'Failed to accept delivery');
         } finally {
             setAccepting(null);
         }
@@ -108,9 +109,10 @@ const RunnerDashboard = () => {
         setAccepting(pkgId);
         try {
             await acceptPackage(pkgId);
+            toast.success('Package delivery accepted!');
             await fetchAll();
         } catch (err) {
-            alert(err.response?.data?.message || 'Failed to accept package');
+            toast.error(err.response?.data?.message || 'Failed to accept package');
         } finally {
             setAccepting(null);
         }
@@ -129,9 +131,10 @@ const RunnerDashboard = () => {
             } else {
                 await updatePackageStatus(activeDelivery.data._id, nextStatus);
             }
+            toast.success(`Status updated to ${nextStatus}`);
             await fetchAll();
         } catch (err) {
-            alert(err.response?.data?.message || 'Failed to update status');
+            toast.error(err.response?.data?.message || 'Failed to update status');
         } finally {
             setUpdatingStatus(false);
         }

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getAllOutlets } from '../../api/outletApi';
 import { getMyOrders, getMyOrderDeliveries } from '../../api/orderApi';
 import { getMyDeliveries, getMyPackages } from '../../api/packageApi';
+import { getProfile } from '../../api/dashboardApi';
 import useAuth from '../../hooks/useAuth';
 import { Search, ChevronDown, Truck, Package, X, User, LogOut, ShoppingBag, Clock } from 'lucide-react';
 import '../../pages/Home/Home.css';
@@ -34,6 +35,9 @@ const Navbar = () => {
     // User's active or previous delivery history (for package or food runners)
     const [deliveryHistory, setDeliveryHistory] = useState([]);
     const [deliveriesLoading, setDeliveriesLoading] = useState(false);
+
+    // User's aggregate profile statistics fetched from getProfile endpoint
+    const [profileStats, setProfileStats] = useState(null);
 
     // Toggle for the mobile navigation drawer menu
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -86,7 +90,7 @@ const Navbar = () => {
      * only when the profile dropdown/panel is opened.
      */
     useEffect(() => {
-        if (profileOpen) {
+        if (profileOpen && user?.role === 'Student') {
             const loadOrders = async () => {
                 setOrdersLoading(true);
                 try {
@@ -121,10 +125,21 @@ const Navbar = () => {
                     setDeliveriesLoading(false);
                 }
             };
+            const loadProfileStats = async () => {
+                try {
+                    const res = await getProfile();
+                    if (res.data?.stats) {
+                        setProfileStats(res.data.stats);
+                    }
+                } catch (err) {
+                    console.error("Failed to fetch dashboard profile stats:", err);
+                }
+            };
             loadOrders();
             loadDeliveries();
+            loadProfileStats();
         }
-    }, [profileOpen]);
+    }, [profileOpen, user?.role]);
 
     /**
      * Effect Hook - Click Outside Handler
@@ -315,38 +330,44 @@ const Navbar = () => {
 
                     {/* Right — Nav Links */}
                     <ul className={`nav-links ${mobileMenuOpen ? 'active' : ''}`}>
-                        <li><Link to="/student-dashboard">Dashboard</Link></li>
+                        {user?.role === 'Outlet' ? (
+                            <li><Link to="/outlet-dashboard">My Outlet</Link></li>
+                        ) : (
+                            <>
+                                <li><Link to="/student-dashboard">Dashboard</Link></li>
 
-                        {/* More Dropdown */}
-                        <li className="nav-dropdown-wrapper" ref={dropdownRef}>
-                            <button
-                                className="nav-dropdown-trigger"
-                                onClick={() => setDropdownOpen(!dropdownOpen)}
-                            >
-                                More <ChevronDown size={14} className={`nav-chevron ${dropdownOpen ? 'open' : ''}`} />
-                            </button>
+                                {/* More Dropdown */}
+                                <li className="nav-dropdown-wrapper" ref={dropdownRef}>
+                                    <button
+                                        className="nav-dropdown-trigger"
+                                        onClick={() => setDropdownOpen(!dropdownOpen)}
+                                    >
+                                        More <ChevronDown size={14} className={`nav-chevron ${dropdownOpen ? 'open' : ''}`} />
+                                    </button>
 
-                            {dropdownOpen && (
-                                <div className="nav-dropdown-menu">
-                                    <Link
-                                        to="/runner-dashboard"
-                                        className="nav-dropdown-item"
-                                        onClick={() => setDropdownOpen(false)}
-                                    >
-                                        <Truck size={16} />
-                                        Runner Dashboard
-                                    </Link>
-                                    <Link
-                                        to="/order-parcel"
-                                        className="nav-dropdown-item"
-                                        onClick={() => setDropdownOpen(false)}
-                                    >
-                                        <Package size={16} />
-                                        Order Parcel
-                                    </Link>
-                                </div>
-                            )}
-                        </li>
+                                    {dropdownOpen && (
+                                        <div className="nav-dropdown-menu">
+                                            <Link
+                                                to="/runner-dashboard"
+                                                className="nav-dropdown-item"
+                                                onClick={() => setDropdownOpen(false)}
+                                            >
+                                                <Truck size={16} />
+                                                Runner Dashboard
+                                            </Link>
+                                            <Link
+                                                to="/order-parcel"
+                                                className="nav-dropdown-item"
+                                                onClick={() => setDropdownOpen(false)}
+                                            >
+                                                <Package size={16} />
+                                                Order Parcel
+                                            </Link>
+                                        </div>
+                                    )}
+                                </li>
+                            </>
+                        )}
 
                         {/* Profile Icon */}
                         <li className="nav-profile-wrapper" ref={profileRef}>
@@ -384,7 +405,7 @@ const Navbar = () => {
                                             <Truck size={16} />
                                             <div>
                                                 <span className="nav-stat-value">
-                                                    {user?.deliveryStats?.deliveriesCompleted || 0}
+                                                    {profileStats?.totalDeliveries ?? user?.deliveryStats?.deliveriesCompleted ?? 0}
                                                 </span>
                                                 <span className="nav-stat-label">Deliveries</span>
                                             </div>
@@ -393,7 +414,7 @@ const Navbar = () => {
                                             <ShoppingBag size={16} />
                                             <div>
                                                 <span className="nav-stat-value">
-                                                    {orderHistory.length}
+                                                    {profileStats ? (profileStats.totalOrders + profileStats.totalPackages) : orderHistory.length}
                                                 </span>
                                                 <span className="nav-stat-label">Orders</span>
                                             </div>

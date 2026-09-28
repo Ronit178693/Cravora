@@ -1,14 +1,5 @@
-import axios from "axios";
-import { baseURL, API_PATHS } from "../utils/API_paths";
-
-/**
- * Custom Axios client configuration for food outlet actions.
- * - withCredentials: true ensures user auth cookies are transmitted.
- */
-const API = axios.create({
-    baseURL: baseURL,
-    withCredentials: true,
-});
+import API from "./axiosClient";
+import { API_PATHS } from "../utils/API_paths";
 
 /**
  * Creates a new merchant food outlet entry.

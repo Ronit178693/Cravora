@@ -1,16 +1,5 @@
-import axios from "axios";
-import { baseURL, API_PATHS } from "../utils/API_paths";
-
-/**
- * Custom Axios client configuration for authentication actions.
- * - withCredentials: true ensures cookies (JWT token) are sent and saved automatically by the browser.
- * - timeout: 15s prevents requests from hanging indefinitely.
- */
-const API = axios.create({
-    baseURL: baseURL,
-    withCredentials: true,
-    timeout: 15000,
-});
+import API from "./axiosClient";
+import { API_PATHS } from "../utils/API_paths";
 
 /**
  * Registers a new user account.

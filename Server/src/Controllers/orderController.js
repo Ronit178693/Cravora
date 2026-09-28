@@ -149,12 +149,12 @@ export const getOutletOrders = async (req, res) => {
         // Step 1: Find all outlets owned by the active user
         const outlets = await Outlet.find({ owner: req.user.id });
         if (!outlets || outlets.length === 0) {
-            return res.status(404).json({ success: false, message: "You don't have an outlet registered" });
+            return res.status(200).json({ success: true, orders: [] });
         }
-        
+
         // Extract array of outlet IDs
         const outletIds = outlets.map(o => o._id);
-        
+
         // Step 2: Retrieve all orders that belong to the list of outlet IDs
         const orders = await Order.find({ outlet: { $in: outletIds } })
             .populate("customer", "name email phoneNumber")
@@ -236,6 +236,7 @@ export const updateOrderStatus = async (req, res) => {
         const statusFlow = {
             "Pending": "Accepted",
             "Accepted": "Preparing",
+            "Preparing": "OutForDelivery",
             "OutForDelivery": "Delivered"
         };
 
@@ -247,11 +248,11 @@ export const updateOrderStatus = async (req, res) => {
         order.status = status;
         if (status === "Delivered") {
             order.deliveredAt = new Date();
-            
+
             if (order.runner) {
                 await User.findByIdAndUpdate(order.runner, {
                     $inc: { "deliveryStats.deliveriesCompleted": 1 },
-                    $set: { "deliveryStats.lastDeliveryAt": new Date() }
+                    $set: { lastDeliveryAt: new Date() }
                 });
             }
         }

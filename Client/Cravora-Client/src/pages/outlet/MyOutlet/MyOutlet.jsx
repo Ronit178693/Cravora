@@ -11,7 +11,7 @@ import '../../Home/Home.css';
 import Sidebar from '../../../components/Outlet/Sidebar';
 import AddOutletModal from '../../../components/Outlet/AddOutletModal';
 import OutletList from '../../../components/Outlet/OutletList';
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const MyOutlet = () => {
     // Array storing list of outlets owned by the logged-in merchant
@@ -100,18 +100,6 @@ const MyOutlet = () => {
             <Sidebar />
 
             <main className="dashboard-main dark-theme">
-                {/* hot-toast notification alerts manager */}
-                <Toaster
-                    position="top-center"
-                    toastOptions={{
-                        style: {
-                            background: "var(--bg-card)",
-                            color: "var(--text-primary)",
-                            border: "1px solid var(--border)",
-                            borderRadius: "var(--radius-md)",
-                        },
-                    }}
-                />
 
                 <div style={{ padding: '40px' }}>
                     <div className="dashboard-header" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '20px', marginBottom: '40px' }}>

@@ -13,6 +13,7 @@ import {
 } from "../Controllers/orderController.js";
 import { protect } from "../Middlewares/authMiddleware.js";
 import { authorize } from "../Middlewares/roleMiddleware.js";
+import { createOrderLimiter } from "../Middlewares/rateLimitMiddleware.js";
 
 const router = express.Router();
 
@@ -23,8 +24,8 @@ const router = express.Router();
 
 // --- Customer (Student) Routes ---
 
-// Place a new food order
-router.post("/", protect, authorize("Student"), placeOrder);
+// Place a new food order (Rate-limited to prevent spamming/duplicate orders)
+router.post("/", protect, authorize("Student"), createOrderLimiter, placeOrder);
 
 // Retrieve the logged-in customer's order history
 router.get("/my-orders", protect, authorize("Student"), getMyOrders);

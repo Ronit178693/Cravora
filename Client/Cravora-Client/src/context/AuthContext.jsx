@@ -5,13 +5,14 @@
 import { createContext, useState, useEffect } from "react";
 import { registerUser, loginUser, logoutUser } from "../api/authApi";
 import { getUser as fetchMe } from "../api/userApi";
+import { setAuthToken } from "../api/axiosClient";
 
 // Create context object to be consumed by useAuth hook
 export const AuthContext = createContext(null);
 
 /**
  * AuthProvider component that wraps the entire app tree.
- * Restores and manages user sessions via HTTP-Only cookies.
+ * Restores and manages user sessions via HTTP-Only cookies & in-memory Bearer token.
  */
 export function AuthProvider({ children }) {
     // Current authenticated user object (null if logged out)
@@ -35,9 +36,13 @@ export function AuthProvider({ children }) {
                 const res = await fetchMe();
                 if (!cancelled) {
                     setUser(res.data.user); // Set authenticated user state
+                    if (res.data.token) {
+                        setAuthToken(res.data.token); // Populate in-memory Bearer token
+                    }
                 }
             } catch {
                 // No valid JWT cookie or server unreachable - keep user state as null (logged out)
+                setAuthToken(null);
             } finally {
                 if (!cancelled) {
                     setIsCheckingSession(false); // Stop session loading spinner
@@ -57,6 +62,9 @@ export function AuthProvider({ children }) {
         setError(null);
         try {
             const res = await registerUser(formData);
+            if (res.data.token) {
+                setAuthToken(res.data.token); // Store token in RAM
+            }
             setUser(res.data.user); // Set state to newly created user
             return res.data;
         } catch (err) {
@@ -77,6 +85,9 @@ export function AuthProvider({ children }) {
         setError(null);
         try {
             const res = await loginUser(formData);
+            if (res.data.token) {
+                setAuthToken(res.data.token); // Store token in RAM
+            }
             setUser(res.data.user); // Set state to authenticated user
             return res.data;
         } catch (err) {
@@ -98,6 +109,7 @@ export function AuthProvider({ children }) {
         } catch (err) {
             console.error("Backend logout failed:", err);
         } finally {
+            setAuthToken(null); // Clear in-memory token
             setUser(null); // Clear authenticated user state
             setError(null);
             setLoading(false);

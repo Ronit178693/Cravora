@@ -11,6 +11,7 @@ import {
 } from "../Controllers/packageController.js";
 import { protect } from "../Middlewares/authMiddleware.js";
 import { authorize } from "../Middlewares/roleMiddleware.js";
+import { createOrderLimiter } from "../Middlewares/rateLimitMiddleware.js";
 
 const router = express.Router();
 
@@ -21,8 +22,8 @@ const router = express.Router();
 
 // --- Customer (Student) Routes ---
 
-// Create a new package delivery request
-router.post("/", protect, authorize("Student"), createPackage);
+// Create a new package delivery request (Rate-limited to prevent spamming)
+router.post("/", protect, authorize("Student"), createOrderLimiter, createPackage);
 
 // Retrieve all package requests created by the active student
 router.get("/my-packages", protect, authorize("Student"), getMyPackages);

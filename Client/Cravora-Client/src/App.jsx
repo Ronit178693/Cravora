@@ -20,6 +20,8 @@ import OutletOrders from "./pages/outlet/OutletOrders/OutletOrders";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import OutletDetail from "./pages/OutletDetail/OutletDetail";
 import Checkout from "./pages/Checkout/Checkout";
+import OrderTracking from "./pages/OrderTracking/OrderTracking";
+import NotFound from "./pages/NotFound/NotFound";
 
 // --- Student Runner & Parcel Pages ---
 import RunnerDashboard from "./pages/RunnerDashboard/RunnerDashboard";
@@ -50,11 +52,15 @@ function App() {
       <Route path="/student-dashboard" element={<ProtectedRoute roles={["Student"]}><Dashboard /></ProtectedRoute>} />
       <Route path="/outlet/:id" element={<ProtectedRoute roles={["Student"]}><OutletDetail /></ProtectedRoute>} />
       <Route path="/checkout" element={<ProtectedRoute roles={["Student"]}><Checkout /></ProtectedRoute>} />
+      <Route path="/order-tracking/:id" element={<ProtectedRoute roles={["Student"]}><OrderTracking /></ProtectedRoute>} />
 
       {/* Student Runner Delivery & Peer-to-Peer Parcel Routes (Requires authenticated "Student" role access) */}
       <Route path="/runner-dashboard" element={<ProtectedRoute roles={["Student"]}><RunnerDashboard /></ProtectedRoute>} />
       <Route path="/order-parcel" element={<ProtectedRoute roles={["Student"]}><OrderParcel /></ProtectedRoute>} />
       <Route path="/delivery-history" element={<ProtectedRoute roles={["Student"]}><DeliveryHistory /></ProtectedRoute>} />
+
+      {/* Catch-all 404 Route */}
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

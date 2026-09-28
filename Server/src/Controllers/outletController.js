@@ -133,7 +133,9 @@ export const updateOutlet = async (req, res) => {
         if (location !== undefined) outlet.location = location;
         if (contactNumber !== undefined) outlet.contactNumber = contactNumber;
         if (req.file) outlet.images = [req.file.path];
-        if (WorkingHours !== undefined) outlet.WorkingHours = WorkingHours;
+        if (WorkingHours !== undefined) {
+    outlet.WorkingHours = typeof WorkingHours === 'string' ? JSON.parse(WorkingHours) : WorkingHours;
+}
         if (isOpen !== undefined) outlet.isOpen = isOpen;
 
         await outlet.save();

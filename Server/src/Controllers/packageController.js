@@ -1,4 +1,5 @@
 import Package from "../Models/Package.js";
+import User from "../Models/User.js";
 
 /**
  * Controller: Create a new parcel request (Customer)
@@ -22,8 +23,8 @@ export const createPackage = async (req, res) => {
         }
 
         // Step 3: Validate that the custom delivery fee/tip is a non-negative number
-        if (deliveryFee !== undefined && (typeof deliveryFee !== "number" || deliveryFee < 0)) {
-            return res.status(400).json({ success: false, message: "Delivery fee must be a positive number" });
+        if (deliveryFee !== undefined && (isNaN(Number(deliveryFee)) || Number(deliveryFee) < 0)) {
+            return res.status(400).json({ success: false, message: "Delivery fee must be a non-negative number" });
         }
 
         // Step 4: Create and save the new package request document
@@ -31,10 +32,10 @@ export const createPackage = async (req, res) => {
             customer: userID,
             type,
             description,
-            quantity: quantity || 1,
+            quantity: Number(quantity) || 1,
             pickupLocation,
             dropLocation,
-            deliveryFee: deliveryFee || 0,
+            deliveryFee: Number(deliveryFee) || 0,
             instructions
         });
 
@@ -187,10 +188,17 @@ export const updatePackageStatus = async (req, res) => {
             return res.status(400).json({ success: false, message: `Cannot move from '${pkg.status}' to '${status}'. Next valid status: '${statusFlow[pkg.status]}'` });
         }
 
-        // Step 4: Advance status, logging timestamp if delivered
+        // Step 4: Advance status, logging timestamp and updating runner stats if delivered
         pkg.status = status;
         if (status === "Delivered") {
             pkg.deliveredAt = new Date();
+
+            if (pkg.runner) {
+                await User.findByIdAndUpdate(pkg.runner, {
+                    $inc: { "deliveryStats.deliveriesCompleted": 1 },
+                    $set: { lastDeliveryAt: new Date() }
+                });
+            }
         }
         await pkg.save();
 

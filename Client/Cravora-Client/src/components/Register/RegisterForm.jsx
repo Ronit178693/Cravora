@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import {
     User,
     Mail,
@@ -105,17 +105,6 @@ export default function RegisterForm() {
 
     return (
         <div className="register-form-container">
-            <Toaster
-                position="top-center"
-                toastOptions={{
-                    style: {
-                        background: "var(--bg-card)",
-                        color: "var(--text-primary)",
-                        border: "1px solid var(--border)",
-                        borderRadius: "var(--radius-md)",
-                    },
-                }}
-            />
 
             <div className="register-header">
                 <div className="register-logo">Cravora</div>

@@ -1,14 +1,5 @@
-import axios from "axios";
-import { baseURL, API_PATHS } from "../utils/API_paths";
-
-/**
- * Custom Axios client configuration for peer-to-peer parcel delivery requests.
- * - withCredentials: true ensures user authentication session is passed correctly.
- */
-const API = axios.create({
-    baseURL: baseURL,
-    withCredentials: true,
-});
+import API from "./axiosClient";
+import { API_PATHS } from "../utils/API_paths";
 
 /**
  * Submits a new peer-to-peer package delivery request to the queue.

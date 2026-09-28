@@ -7,6 +7,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import './index.css' // Import master styles containing CSS variables and tokens
+import { Toaster } from 'react-hot-toast'
 import App from './App.jsx'
 
 // Find document mount target and render virtual DOM tree
@@ -17,6 +18,7 @@ createRoot(document.getElementById('root')).render(
     <AuthProvider>
       {/* CartProvider keeps track of items in user's active shopping cart */}
       <CartProvider>
+        <Toaster position="top-center" reverseOrder={false} />
         <App />
       </CartProvider>
     </AuthProvider>

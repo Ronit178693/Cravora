@@ -1,5 +1,5 @@
+import "dotenv/config";
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import Connection from "./Config/Connection_DB.js";
@@ -11,10 +11,7 @@ import menuRoutes from "./Routes/menuRoutes.js";
 import orderRoutes from "./Routes/orderRoutes.js";
 import packageRoutes from "./Routes/packageRoutes.js";
 
-// Step 1: Load environment variables from the .env file
-dotenv.config();
-
-// Step 2: Initialize the Express application instance
+// Step 1: Initialize the Express application instance
 const app = express();
 
 // Step 3: Configure trust proxy settings
@@ -35,14 +32,17 @@ app.use(cors(
             if (!origin) return callback(null, true);
 
             // Define list of trusted domains
-            const allowedOrigins = ["http://localhost:5173", "https://cravora-chi.vercel.app"];
+            const allowedOrigins = ["https://cravora-chi.vercel.app"];
             if (process.env.CLIENT_URL) allowedOrigins.push(process.env.CLIENT_URL);
 
-            // Allow request if origin is in the allowed list or is a Vercel deployment preview subdomain
-            if (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
+            // Matches any localhost port dynamically (e.g. 5173, 5174, 3000, 4173)
+            const isLocalhost = /^http:\/\/localhost:\d+$/.test(origin);
+            const isVercel = origin.endsWith(".vercel.app");
+
+            if (allowedOrigins.includes(origin) || isLocalhost || isVercel) {
                 callback(null, true);
             } else {
-                callback(new Error("Not allowed by CORS"));
+                callback(null, false); // Clean CORS rejection without throwing 500 error
             }
         },
         credentials: true // Crucial: allows browsers to send and receive cookies with cross-origin requests
@@ -53,7 +53,10 @@ app.use(cors(
 app.use(express.json()); // Parses incoming JSON payloads in the request body
 app.use(cookieParser()); // Parses cookies from the request headers to support req.cookies
 
-// Step 7: Mount endpoint route groups
+// Step 7: Apply general API rate limiting
+
+
+// Step 8: Mount endpoint route groups
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/dashboard", dashboardRoutes);

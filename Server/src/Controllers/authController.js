@@ -43,7 +43,7 @@ export const Register = async (req, res) => {
         // Step 5: Send the session token back to the browser as an HTTP-only cookie
         res.cookie("token", token, {
             httpOnly: true, // Prevents client-side scripts from reading the cookie (protects against XSS)
-            secure: process.env.NODE_ENV === "production" && req.protocol === "https", // HTTPS only in production
+            secure: process.env.NODE_ENV === "production", // HTTPS only in production
             sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // CORS cookie handling
             maxAge: 7 * 24 * 60 * 60 * 1000, // Expiration set to 7 days in milliseconds
         });
@@ -63,8 +63,8 @@ export const Register = async (req, res) => {
             console.error("Failed to send welcome email:", error);
         });
 
-        // Step 8: Return success response with the new user's profile details
-        return res.status(201).json({ success: true, message: "User created successfully", user: newUser });
+        // Step 8: Return success response with the new user's profile details and token for Bearer fallback
+        return res.status(201).json({ success: true, message: "User created successfully", user: newUser, token });
     }
     catch (error) {
         // Handle database or server errors
@@ -107,14 +107,14 @@ export const Login = async (req, res) => {
         // Step 5: Send the JWT token as a secure cookie
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production" && req.protocol === "https",
+            secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
-        // Step 6: Exclude password from the returned user details and respond
+        // Step 6: Exclude password from the returned user details and respond with token for Bearer fallback
         user.password = undefined;
-        return res.status(200).json({ success: true, message: "User logged in successfully", user });
+        return res.status(200).json({ success: true, message: "User logged in successfully", user, token });
     }
     catch (error) {
         return res.status(500).json({ success: false, message: error.message });
@@ -130,7 +130,7 @@ export const Logout = async (req, res) => {
         // Step 1: Clear the "token" cookie with matching secure parameters
         res.clearCookie("token", {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production" && req.protocol === "https",
+            secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         });
         return res.status(200).json({ success: true, message: "User logged out successfully" });

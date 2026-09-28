@@ -13,7 +13,8 @@ export const getUser = async (req, res) => {
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
-        return res.status(200).json({ success: true, user });
+        const token = req.cookies?.token || req.headers.authorization?.split(" ")[1];
+        return res.status(200).json({ success: true, user, token });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }

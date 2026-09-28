@@ -11,7 +11,7 @@ import { baseURL } from '../../utils/API_paths';
 import { placeOrder } from '../../api/orderApi';
 import Navbar from '../../components/Navbar/Navbar';
 import OrderTracker from '../../components/OrderTracker/OrderTracker';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import CartList from '../../components/Checkout/CartList';
 import OrderSummary from '../../components/Checkout/OrderSummary';
 import '../Dashboard/StudentDashboard.css';
@@ -130,16 +130,6 @@ const Checkout = () => {
     return (
         <div className="sd-page">
             <Navbar />
-            <Toaster
-                position="top-center"
-                toastOptions={{
-                    style: {
-                        background: 'var(--bg-card)',
-                        color: 'var(--text-primary)',
-                        border: '1px solid var(--border)',
-                    },
-                }}
-            />
             <div className="sd-container">
                 <Link to="/student-dashboard" className="sd-back-link">
                     <ArrowLeft size={16} /> Continue shopping

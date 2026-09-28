@@ -1,14 +1,5 @@
-import axios from "axios";
-import { baseURL, API_PATHS } from "../utils/API_paths";
-
-/**
- * Reusable Axios configuration for placing and tracking customer orders.
- * - withCredentials: true ensures active sessions are passed along.
- */
-const API = axios.create({
-    baseURL: baseURL,
-    withCredentials: true,
-});
+import API from "./axiosClient";
+import { API_PATHS } from "../utils/API_paths";
 
 /**
  * Submits a new customer food order to the backend database.

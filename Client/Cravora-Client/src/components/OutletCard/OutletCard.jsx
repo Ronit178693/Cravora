@@ -44,8 +44,10 @@ const OutletCard = ({ outlet, index = 0 }) => {
                         <span>{outlet.name?.charAt(0)}</span>
                     </div>
                 )}
-                {outlet.isOpen !== false && (
+                {outlet.isOpen !== false ? (
                     <span className="sd-open-badge">Open</span>
+                ) : (
+                    <span className="sd-open-badge closed" style={{ background: 'rgba(239, 68, 68, 0.85)', color: '#ffffff' }}>Closed</span>
                 )}
             </div>
 
