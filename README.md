@@ -29,6 +29,7 @@
 ## 📖 Table of Contents
 
 - [About the Project](#-about-the-project)
+- [Skills & Concepts Demonstrated](#-skills--concepts-demonstrated)
 - [Features](#-features)
 - [Architecture](#-architecture)
 - [Tech Stack](#-tech-stack)
@@ -46,13 +47,35 @@
 
 ## 🎯 About the Project
 
-**Cravora** is a full-stack campus food ordering and peer-to-peer delivery platform built for university ecosystems. It connects three key players in campus life:
+College campuses have a logistics problem that off-the-shelf delivery apps don't solve well: food stalls are run by students or small vendors, delivery radius is a five-minute walk, and the people best positioned to deliver are other students who are already heading that way. **Cravora** is a full-stack campus food ordering and peer-to-peer delivery platform built to solve exactly that, by turning every student into a potential runner instead of hiring a separate delivery fleet.
+
+It connects three key players in campus life:
 
 | 🎓 **Students** | 🏪 **Outlet Owners** | 🏃 **Runners** |
 |:---:|:---:|:---:|
 | Browse menus, order food, and send parcels from anywhere on campus | List your food stall, manage menus, and track incoming orders in real-time | Pick up deliveries, earn money, and track your stats — all from the same student account |
 
-> **💡 Unique Design:** There is no separate "Runner" registration. Every student can seamlessly switch between **ordering food** and **delivering it** with a single tap. One account, two modes.
+> **💡 Unique Design:** There is no separate "Runner" registration or role. Every `Student` account can seamlessly switch between **ordering food** and **delivering it** with a single tap. One account, two modes — which pushed interesting design decisions around authorization (a runner is just a student acting on someone else's order) and preventing self-dealing (a customer can't accept their own order for delivery).
+
+I designed and built the entire system end-to-end — schema design, API, auth, and the React frontend — as a solo project, from the initial data model through deployment on Render and Vercel.
+
+---
+
+## 💼 Skills & Concepts Demonstrated
+
+This project was built to go deeper than CRUD. A few decisions worth highlighting in an interview:
+
+| Area | What was built | Why it matters |
+|:---|:---|:---|
+| **Server-trusted pricing** | `placeOrder` ignores any price the client sends — it re-reads each `menuItemId` from the outlet's own menu subdocument, checks `isAvailable`, and recomputes `totalAmount` and the flat delivery fee server-side. | Never trust client-supplied prices; this closes an obvious "pay less by editing the request" exploit. |
+| **Explicit state machines** | Both `Order` (`Pending → Accepted → Preparing → OutForDelivery → Delivered`) and `Package` (`Pending → Accepted → PickedUp → Delivered`) status transitions are validated against a `statusFlow` map on the server — an update can't skip states or go backwards, regardless of what the client requests. | Models real-world lifecycle logic as data, not a pile of `if` statements, and prevents invalid state corruption at the API boundary. |
+| **Defense-in-depth authorization** | Three-layer check on every sensitive route: JWT verification (`authMiddleware`) → role check (`roleMiddleware`) → per-resource ownership check inside the controller (e.g. only the *outlet owner* can accept its orders, only the *assigned runner* or that outlet can update status, a customer can't delivery-accept their own order). | Shows the difference between "is this user logged in" and "is this user allowed to touch *this* row" — a distinction a lot of CRUD tutorials skip. |
+| **Rate limiting as a security control, not an afterthought** | Separate `express-rate-limit` policies tuned per endpoint risk: 10 attempts/15 min on auth (brute-force), 5/15 min on OTP request & verify (prevents email-bombing and OTP guessing), 20/10 min on order/package creation (anti-spam). | Rate limits aren't one-size-fits-all; each endpoint's limit reflects its actual abuse vector. |
+| **Auth via HTTP-only cookies, not localStorage** | JWTs are issued with `httpOnly`, environment-aware `secure`/`sameSite` flags, and a 7-day expiry, set via `Set-Cookie` rather than stored in `localStorage`. | Avoids XSS-exfiltrable tokens — a common mistake in tutorial-grade MERN auth. |
+| **OTP-based password reset with real expiry handling** | Crypto-random 6-digit OTP (`crypto.randomInt`), 5-minute TTL enforced server-side, OTP fields explicitly cleared after use or expiry so a stale code can never be replayed. | Treats a "forgot password" flow as a security-sensitive feature, not just another form. |
+| **Optimistic, resilient client state** | Cart state lives in a `useReducer` + Context store and is mirrored to `localStorage`, so a refresh mid-checkout doesn't lose the cart; `AuthContext` does a session check on load so a refresh doesn't bounce a logged-in user to `/login`. | Real UX polish: handling the refresh/navigation edge cases most demos ignore. |
+| **Live-feeling UI without a WebSocket** | The order tracker polls the order-status endpoint on an interval to simulate real-time updates. | A deliberate, pragmatic trade-off — called out here rather than oversold as "real-time," and a natural segue to discussing how I'd swap it for WebSockets/SSE if given more time. |
+| **Clean separation of concerns** | Routes → Middleware → Controllers → Mongoose Models, mirrored by an `api/` layer of typed Axios modules on the frontend so components never call `axios` directly. | Standard layered architecture, applied consistently across 7 controllers and 7 route modules rather than left ad hoc. |
 
 ---
 
@@ -77,7 +100,7 @@
 - **Smart Cart** — Add items, auto-calculate totals, and your cart **persists across page refreshes** (localStorage)
 - **Place Orders** — Choose a drop location, review your order, and submit
 - **Track Orders** — Real-time order status: `Pending → Accepted → Preparing → Out for Delivery → Delivered`
-- **Send Parcels** — Request courier, Blinkit, or food pickups from the campus gate to your hostel
+- **Send Parcels** — Request courier, Blinkit-style, or food pickups from the campus gate to your hostel
 - **Switch to Runner Mode** — Instantly see available deliveries, accept them, and earn delivery fees
 - **Delivery History** — Track all your past deliveries and earnings
 
@@ -522,6 +545,7 @@ Cravora/
 │   │   │   ├── Dashboard.jsx          #   Student dashboard (browse outlets)
 │   │   │   ├── OutletDetail.jsx       #   Single outlet view with menu
 │   │   │   ├── Checkout.jsx           #   Cart review and order placement
+│   │   │   ├── OrderTracking.jsx      #   Live order status tracking by ID
 │   │   │   ├── RunnerDashboard.jsx    #   Available deliveries + active jobs
 │   │   │   ├── OrderParcel.jsx        #   Create parcel delivery request
 │   │   │   ├── DeliveryHistory.jsx    #   Past deliveries and earnings
